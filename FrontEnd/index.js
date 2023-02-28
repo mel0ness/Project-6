@@ -2,19 +2,24 @@
 
 let dataBase = [];
 
-// async function fetchAPI() {
-//   const response = await fetch("http://localhost:5678/api/works");
-//   dataBase = await response.json();
-// }
+async function fetchAPI() {
+  const response = await fetch("http://localhost:5678/api/works");
+  dataBase = await response.json();
+  console.log(dataBase);
+  createElements(dataBase);
+}
 
-// fetchAPI();
+fetchAPI();
 
-// Async function but scope probs! Better in module or call function each time? ++ module donesn't accept to define variables??? ________________
+// Async function but scope probs! Better in module or call function each time? ++ module doesn't accept to define variables??? ________________
+//Choix difficile = > Module est parfait pour avoir notre élément défini dans tout le document alors que le async/await ne le défini que dans un scope précis
+// = > non-module permet de définir nos variables dans tous le document et d'utiliser le JS en pleine capacité.
+//Séparation des js modules et classiques?
 
-const response = await fetch("http://localhost:5678/api/works");
-dataBase = await response.json();
+// const response = await fetch("http://localhost:5678/api/works");
+// dataBase = await response.json();
 
-console.log(dataBase);
+// console.log(dataBase);
 
 // Some test ________________________________________________________
 
@@ -37,4 +42,4 @@ function createElements(e) {
   }
 }
 
-createElements(dataBase);
+const elem = document.getElementById("contact");
