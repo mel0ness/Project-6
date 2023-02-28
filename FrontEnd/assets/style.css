@@ -143,6 +143,11 @@ section {
   margin: 50px 0;
 }
 
+a {
+  color: black;
+  text-decoration: none;
+}
+
 h1 {
   display: flex;
   flex-direction: column;
@@ -177,6 +182,82 @@ nav li {
 li:hover {
   color: #b1663c;
 }
+
+.decal {
+  position: relative;
+  top: 59px;
+}
+
+.modeEdition {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 59px;
+
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+}
+
+.modeEditionLog {
+  display: flex;
+}
+
+.edition img {
+  position: absolute;
+}
+
+.crayon {
+  bottom: 4px;
+  left: 4px;
+}
+
+.carre {
+  bottom: 0;
+  left: 0;
+}
+
+.edition {
+  position: relative;
+  padding-left: 30px;
+  color: white;
+  font-family: "Work Sans";
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.proj {
+  position: relative;
+}
+
+.proj > .edition {
+  color: black;
+}
+
+.editionProj {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(100%, -50%);
+}
+
+.editionProjLog {
+  display: block;
+}
+
+.publication {
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-size: 14px;
+  padding: 11px 23px 11px 23px;
+  border-radius: 60px;
+  background-color: white;
+  margin-left: 21px;
+}
+
 #introduction {
   display: flex;
   align-items: center;
@@ -238,33 +319,44 @@ li:hover {
 .gallery img {
   width: 100%;
 }
-#contact {
+#contact,
+#login {
   width: 50%;
   margin: auto;
 }
-#contact > * {
+
+#login {
+  margin: 100px auto;
+}
+#contact > *,
+#login > * {
   text-align: center;
 }
-#contact h2 {
+#contact h2,
+#login h2 {
   margin-bottom: 20px;
 }
-#contact form {
+#contact form,
+#login form {
   text-align: left;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
 }
 
-#contact input {
+#contact input,
+#login input {
   height: 50px;
   font-size: 1.2em;
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
-#contact label {
+#contact label,
+#login label {
   margin: 2em 0 1em 0;
 }
-#contact textarea {
+#contact textarea,
+#login textarea {
   border: none;
   box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
 }
@@ -278,10 +370,21 @@ input[type="submit"] {
   width: 180px;
   text-align: center;
   border-radius: 60px;
+  cursor: pointer;
 }
 
 footer nav ul {
   display: flex;
   justify-content: flex-end;
   margin: 2em;
+}
+
+.forgotten {
+  margin: auto;
+  font-family: "Work Sans";
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(61, 61, 61, 1);
+  text-decoration: underline;
+  cursor: pointer;
 }

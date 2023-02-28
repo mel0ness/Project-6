@@ -1,3 +1,27 @@
+//Solution de rechange en attendant! Comment vérifier le token à chaque chargement? Perdu je suis...
+
+let connected = window.localStorage.getItem("connected");
+
+if (connected) {
+  alert("connecté");
+  const logout = document.getElementById("logout");
+  logout.innerHTML = "Logout";
+
+  const body = document.querySelector("body");
+  const edition = document.querySelector(".modeEdition");
+  const editionProj = document.querySelector(".editionProj");
+
+  body.classList.add("decal");
+  edition.classList.add("modeEditionLog");
+  editionProj.classList.add("editionProjLog");
+
+  logout.addEventListener("click", () => {
+    window.localStorage.clear("connected");
+    connected = null;
+    window.location.reload();
+  });
+}
+
 // Get API and able to use it is a var__________________________________
 const filtres = document.querySelectorAll(".filtres");
 const galerie = document.querySelector(".gallery");
