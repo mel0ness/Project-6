@@ -83,14 +83,14 @@ function filtrer(e) {
     minusOne.classList.remove("filtres-selected");
     minusTwo.classList.remove("filtres-selected");
     minusThree.classList.remove("filtres-selected");
-  }
-  if (e === "all") {
-    fetchAPI();
-  } else if (e !== "all") {
-    filtresFinaux(e);
+
+    if (e === "all") {
+      fetchAPI();
+    } else if (e !== "all") {
+      filtresFinaux(e);
+    }
   }
 }
-
 const filterMinusFunction = (index) => {
   filterMinus = filterGlobal.filter((e) => {
     return !e.match(index);
