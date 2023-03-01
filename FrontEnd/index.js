@@ -1,25 +1,44 @@
 //Solution de rechange en attendant! Comment vérifier le token à chaque chargement? Perdu je suis...
 
+let connectedTime = parseInt(window.localStorage.getItem("connectedTime"));
 let connected = window.localStorage.getItem("connected");
+let date = Date.parse(new Date());
+let connectedSecurity = connectedTime + 3600000;
+let connectedAlert = window.localStorage.getItem("connectedAlert");
+
+const disconnect = () => {
+  window.localStorage.clear();
+  connected = null;
+  connectedTime = null;
+  window.location.reload();
+};
 
 if (connected) {
-  alert("connecté");
-  const logout = document.getElementById("logout");
-  logout.innerHTML = "Logout";
+  if (date > connectedSecurity) {
+    alert("vous devez vous reconnecter");
+    disconnect();
+  } else {
+    const logout = document.getElementById("logout");
+    logout.innerHTML = "Logout";
 
-  const body = document.querySelector("body");
-  const edition = document.querySelector(".modeEdition");
-  const editionProj = document.querySelector(".editionProj");
+    const body = document.querySelector("body");
+    const edition = document.querySelector(".modeEdition");
+    const editionProj = document.querySelector(".editionProj");
 
-  body.classList.add("decal");
-  edition.classList.add("modeEditionLog");
-  editionProj.classList.add("editionProjLog");
+    body.classList.add("decal");
+    edition.classList.add("modeEditionLog");
+    editionProj.classList.add("editionProjLog");
 
-  logout.addEventListener("click", () => {
-    window.localStorage.clear("connected");
-    connected = null;
-    window.location.reload();
-  });
+    logout.addEventListener("click", () => {
+      disconnect();
+    });
+
+    if (connectedAlert) {
+      alert("connecté");
+      connectedAlert = null;
+      window.localStorage.removeItem("connectedAlert");
+    }
+  }
 }
 
 // Get API and able to use it is a var__________________________________
@@ -109,7 +128,7 @@ function filtrer(e) {
     minusThree.classList.remove("filtres-selected");
 
     if (e === "all") {
-      fetchAPI();
+      filtresAll();
     } else if (e !== "all") {
       filtresFinaux(e);
     }
@@ -141,6 +160,11 @@ const filterMinusFunction = (index) => {
 // };
 
 // Sans chargement nouveau d'API
+
+const filtresAll = () => {
+  galerie.innerHTML = "";
+  createElements(dataBase);
+};
 
 const filtresFinaux = (e) => {
   let components = e.toString();

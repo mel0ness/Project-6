@@ -4,6 +4,8 @@ const log = document.querySelector("input[type='submit']");
 const form = document.getElementById("connexion");
 let result = {};
 let token = "";
+let tokenDate = "";
+let connectedAlert = "";
 
 form.addEventListener("submit", (e) => {
   if (user.value.length < 5 || pass.value.length < 5) {
@@ -41,6 +43,10 @@ async function verif() {
   } else {
     token = result.token;
     window.localStorage.setItem("connected", token);
+    tokenDate = Date.parse(new Date());
+    window.localStorage.setItem("connectedTime", tokenDate);
+    connectedAlert = true;
+    window.localStorage.setItem("connectedAlert", connectedAlert);
     document.location.href = "./index.html";
   }
 }
