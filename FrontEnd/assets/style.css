@@ -128,7 +128,7 @@ table {
   border-spacing: 0;
 }
 /** end reset css**/
-body {
+.body {
   max-width: 1140px;
   margin: auto;
   font-family: "Work Sans";
@@ -410,7 +410,7 @@ footer nav ul {
   top: -50px;
   display: block;
   content: "";
-  width: 100%;
+  width: 100vw;
   height: calc(100% + 59px);
   z-index: 10;
   background-color: rgba(0, 0, 0, 0.3);
@@ -461,4 +461,9 @@ footer nav ul {
   display: grid;
   grid-template-columns: repeat(auto-fill, 79px);
   grid-template-columns: repeat(auto-fill, 128px);
+}
+
+.galerie-dyn_item {
+  display: flex;
+  flex-direction: column;
 }

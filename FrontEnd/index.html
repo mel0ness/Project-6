@@ -18,91 +18,101 @@
 
 
 <body class="modale">
-	<div class="modeEdition">
-		<div class="edition"><img src="./assets/icons/carre.png" alt="carré" class="carre"><img
-				src="./assets/icons/crayon.png" alt="crayon" class="crayon">Mode édition</div>
-		<div class="publication">Publier les changement</div>
-	</div>
-	<div class="modale-item">
-		<div class="cross">
-			<div class="cross-elem cross-left"></div>
-			<div class="cross-elem cross-right"></div>
+	<div class="body">
+		<div class="modeEdition">
+			<div class="edition"><img src="./assets/icons/carre.png" alt="carré" class="carre"><img
+					src="./assets/icons/crayon.png" alt="crayon" class="crayon">Mode édition</div>
+			<div class="publication">Publier les changement</div>
 		</div>
-		<div class="modale-galerie">
-			<h3>Galerie photo</h3>
-			<div class="galerie-dyn"></div>
-			<div class="line"></div>
+		<div class="modale-item">
+			<div class="cross">
+				<div class="cross-elem cross-left"></div>
+				<div class="cross-elem cross-right"></div>
+			</div>
+			<div class="modale-galerie">
+				<h3>Galerie photo</h3>
+				<div class="galerie-dyn">
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+					<div class="galerie-dyn_item"><img src="./assets/images/abajour-tahina.png"></div>
+				</div>
+				<div class="line"></div>
+			</div>
 		</div>
+		<header>
+			<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+			<nav>
+				<ul>
+					<li>projets</li>
+					<li>contact</li>
+					<li id="logout"><a href="./login.html">login</a></li>
+					<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+				</ul>
+			</nav>
+		</header>
+		<main>
+			<section id="introduction">
+				<figure>
+					<img src="./assets/images/sophie-bluel.png" alt="">
+				</figure>
+				<article>
+					<h2>Designer d'espace</h2>
+					<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la
+						livraison
+						finale du chantier.</p>
+					<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les
+						couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du
+						chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
+					<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
+						décorateur(trice)</p>
+				</article>
+			</section>
+			<section id="portfolio">
+				<div class="proj">
+					<h2>Mes Projets</h2>
+					<div class="edition editionProj"><img src="./assets/icons/carreN.png" alt="carré" class="carre"><img
+							src="./assets/icons/crayonN.png" alt="crayon" class="crayon">Mode édition</div>
+				</div>
+				<div class="filtres-container">
+					<div class="filtres filtres-selected" id="all">Tous</div>
+					<div class="filtres" id="Objets">Objets</div>
+					<div class="filtres" id="Appartements">Appartements</div>
+					<div class="filtres" id="Hotels_&_restaurants">Hôtels & restaurants</div>
+
+				</div>
+				<div class="gallery">
+
+				</div>
+			</section>
+			<section id="contact">
+				<h2>Contact</h2>
+				<p>Vous avez un projet ? Discutons-en !</p>
+				<form action="#" method="post">
+					<label for="name">Nom</label>
+					<input type="text" name="name" id="name">
+					<label for="email">Email</label>
+					<input type="email" name="email" id="email">
+					<label for="message">Message</label>
+					<textarea name="message" id="message" cols="30" rows="10"></textarea>
+					<input type="submit" value="Envoyer">
+				</form>
+			</section>
+
+
+
+		</main>
+
+		<footer>
+			<nav>
+				<ul>
+					<li>Mentions Légales</li>
+				</ul>
+			</nav>
+		</footer>
 	</div>
-	<header>
-		<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
-		<nav>
-			<ul>
-				<li>projets</li>
-				<li>contact</li>
-				<li id="logout"><a href="./login.html">login</a></li>
-				<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
-			</ul>
-		</nav>
-	</header>
-	<main>
-		<section id="introduction">
-			<figure>
-				<img src="./assets/images/sophie-bluel.png" alt="">
-			</figure>
-			<article>
-				<h2>Designer d'espace</h2>
-				<p>Je raconte votre histoire, je valorise vos idées. Je vous accompagne de la conception à la livraison
-					finale du chantier.</p>
-				<p>Chaque projet sera étudié en commun, de façon à mettre en valeur les volumes, les matières et les
-					couleurs dans le respect de l’esprit des lieux et le choix adapté des matériaux. Le suivi du
-					chantier sera assuré dans le souci du détail, le respect du planning et du budget.</p>
-				<p>En cas de besoin, une équipe pluridisciplinaire peut-être constituée : architecte DPLG,
-					décorateur(trice)</p>
-			</article>
-		</section>
-		<section id="portfolio">
-			<div class="proj">
-				<h2>Mes Projets</h2>
-				<div class="edition editionProj"><img src="./assets/icons/carreN.png" alt="carré" class="carre"><img
-						src="./assets/icons/crayonN.png" alt="crayon" class="crayon">Mode édition</div>
-			</div>
-			<div class="filtres-container">
-				<div class="filtres filtres-selected" id="all">Tous</div>
-				<div class="filtres" id="Objets">Objets</div>
-				<div class="filtres" id="Appartements">Appartements</div>
-				<div class="filtres" id="Hotels_&_restaurants">Hôtels & restaurants</div>
-
-			</div>
-			<div class="gallery">
-
-			</div>
-		</section>
-		<section id="contact">
-			<h2>Contact</h2>
-			<p>Vous avez un projet ? Discutons-en !</p>
-			<form action="#" method="post">
-				<label for="name">Nom</label>
-				<input type="text" name="name" id="name">
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email">
-				<label for="message">Message</label>
-				<textarea name="message" id="message" cols="30" rows="10"></textarea>
-				<input type="submit" value="Envoyer">
-			</form>
-		</section>
-
-
-
-	</main>
-
-	<footer>
-		<nav>
-			<ul>
-				<li>Mentions Légales</li>
-			</ul>
-		</nav>
-	</footer>
 	<script src="./index.js">
 
 
