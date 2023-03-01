@@ -1,5 +1,5 @@
 //Solution de rechange en attendant! Comment vérifier le token à chaque chargement? Perdu je suis...
-
+// Window.localeStorage sur Firefox offline???
 let connectedTime = parseInt(window.localStorage.getItem("connectedTime"));
 let connected = window.localStorage.getItem("connected");
 let date = Date.parse(new Date());
