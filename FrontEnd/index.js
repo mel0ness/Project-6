@@ -38,7 +38,11 @@ const modale = () => {
   // const modaleItem = document.getElementById("modale-item");
 
   const galerieDyn = document.getElementById("galerie-dyn");
-  createElementsGalerie(dataBase, galerieDyn);
+  if (dataBaseFiltres === null) {
+    createElementsGalerie(dataBase, galerieDyn);
+  } else {
+    createElementsGalerie(dataBaseFiltres, galerieDyn);
+  }
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     modaleDiv.innerHTML = "";
@@ -108,7 +112,6 @@ if (connected) {
     const logout = document.getElementById("logout");
     logout.innerHTML = "Logout";
 
-    const body = document.querySelector("body");
     const edition = document.querySelector(".modeEdition");
     const editionProj = document.querySelector(".editionProj");
     const modifs = document.getElementById("modif");
@@ -182,7 +185,7 @@ function createElements(e) {
 
 let filterGlobal = ["all", "Objets", "Appartements", "Hotels_&_restaurants"];
 let filterMinus = [];
-let dataBaseFiltres = [];
+let dataBaseFiltres = null;
 
 filtres.forEach((filtre) => {
   filtre.addEventListener("click", (e) => {
@@ -256,6 +259,7 @@ const filterMinusFunction = (index) => {
 const filtresAll = () => {
   galerie.innerHTML = "";
   createElements(dataBase);
+  dataBaseFiltres = null;
 };
 
 const filtresFinaux = (e) => {
