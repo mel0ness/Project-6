@@ -5,6 +5,7 @@ let connected = window.localStorage.getItem("connected");
 let date = Date.parse(new Date());
 let connectedSecurity = connectedTime + 3600000;
 let connectedAlert = window.localStorage.getItem("connectedAlert");
+const body = document.querySelector("body");
 
 const disconnect = () => {
   window.localStorage.clear();
@@ -13,6 +14,92 @@ const disconnect = () => {
   window.location.reload();
 };
 
+//Modale_______________________________________________________________________________
+//Elements sur le body ne fonctionnent pas au niveau du click????
+const modale = () => {
+  const modaleFiltre = document.getElementById("modale");
+  const modaleDiv = document.getElementById("modale-item");
+  modaleDiv.innerHTML = `
+      <div class="cross" id="cross">
+        <div class="cross-elem cross-left"></div>
+        <div class="cross-elem cross-right"></div>
+      </div>
+      <div class="modale-galerie">
+        <h3>Galerie photo</h3>
+        <div class="galerie-dyn" id="galerie-dyn">
+
+        </div>
+        <div class="line"></div>
+        <input type="submit" value="Ajouter une photo">
+        <p class="delete">Supprimer la galerie</p>
+      </div>
+  `;
+  modaleFiltre.classList.add("modale-class_visible");
+  // const modaleItem = document.getElementById("modale-item");
+
+  const galerieDyn = document.getElementById("galerie-dyn");
+  createElementsGalerie(dataBase, galerieDyn);
+  const cross = document.getElementById("cross");
+  cross.addEventListener("click", () => {
+    modaleDiv.innerHTML = "";
+    modaleFiltre.classList.remove("modale-class_visible");
+  });
+  modaleFiltre.addEventListener("click", () => {
+    modaleDiv.innerHTML = "";
+    modaleFiltre.classList.remove("modale-class_visible");
+  });
+};
+
+// const modale = () => {
+//   body.innerHTML += `<div class="modale-item" id="modale-item">
+//       <div class="cross" id="cross">
+//         <div class="cross-elem cross-left"></div>
+//         <div class="cross-elem cross-right"></div>
+//       </div>
+//       <div class="modale-galerie">
+//         <h3>Galerie photo</h3>
+//         <div class="galerie-dyn" id="galerie-dyn">
+
+//         </div>
+//         <div class="line"></div>
+//         <input type="submit" value="Ajouter une photo">
+//         <p class="delete">Supprimer la galerie</p>
+//       </div>
+//     </div>
+//     <div class="modale" id="modale"></div>`;
+//   const modaleItem = document.getElementById("modale-item");
+//   const modaleFiltre = document.getElementById("modale");
+//   modaleFiltre.classList.add("modale-class_visible");
+//   const galerieDyn = document.getElementById("galerie-dyn");
+//   createElementsGalerie(dataBase, galerieDyn);
+//   const cross = document.getElementById("cross");
+//   cross.addEventListener("click", () => {
+//     deleting(modaleItem, modaleFiltre);
+//   });
+//   modaleFiltre.addEventListener("click", () => {
+//     deleting(modaleItem, modaleFiltre);
+//   });
+// };
+
+// const deleting = (e, f) => {
+//   e.remove();
+//   f.remove();
+// };
+
+const createElementsGalerie = (e, f) => {
+  for (let i = 0; i < e.length; i++) {
+    const item = e[i];
+    const img = document.createElement("div");
+    img.classList.add("galerie-dyn_item");
+    img.innerHTML = `<img src=${item.imageUrl} alt=${item.title}>
+    <p>éditer</p>
+`;
+
+    f.appendChild(img);
+  }
+};
+
+//Locale storage_______________________________________________________________________________
 if (connected) {
   if (date > connectedSecurity) {
     alert("vous devez vous reconnecter");
@@ -24,10 +111,15 @@ if (connected) {
     const body = document.querySelector("body");
     const edition = document.querySelector(".modeEdition");
     const editionProj = document.querySelector(".editionProj");
+    const modifs = document.getElementById("modif");
 
     body.classList.add("decal");
     edition.classList.add("modeEditionLog");
     editionProj.classList.add("editionProjLog");
+
+    modifs.addEventListener("click", () => {
+      modale();
+    });
 
     logout.addEventListener("click", () => {
       disconnect();

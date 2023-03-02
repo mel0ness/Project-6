@@ -400,26 +400,34 @@ footer nav ul {
   left: 50%;
   transform: translate(-50%);
   width: 630px;
-  height: 731px;
   background-color: white;
   z-index: 11;
   border-radius: 10px;
+  transition: 2s ease-out;
 }
-.modale::after {
+.modale {
   position: absolute;
   top: -50px;
+  left: 0;
   content: "";
   margin: 0;
   width: 100%;
   height: calc(100% + 59px);
-  z-index: 10;
   background-color: rgba(0, 0, 0, 0.3);
+  display: none;
+}
+
+.modale-class_visible {
+  display: unset;
 }
 
 .cross {
   position: absolute;
+  height: 30px;
+  width: 30px;
   right: 36px;
   top: 32px;
+  cursor: pointer;
 }
 
 .cross-elem {
@@ -441,7 +449,7 @@ footer nav ul {
   display: flex;
   flex-direction: column;
   margin-top: 60px;
-  gap: 46px;
+  gap: 23px;
 }
 
 .modale-galerie h3 {
@@ -449,21 +457,55 @@ footer nav ul {
   font-weight: 400;
   font-size: 26px;
   text-align: center;
+  margin-bottom: 23px;
 }
 
 .line {
   background-color: rgba(179, 179, 179, 1);
   height: 1px;
   width: 420px;
+  margin: 24px auto 15px auto;
 }
 
 .galerie-dyn {
   display: grid;
-  grid-template-columns: repeat(auto-fill, 79px);
-  grid-template-columns: repeat(auto-fill, 128px);
+  grid-template-rows: repeat(auto-fill, 137px);
+  grid-template-columns: repeat(auto-fill, 78px);
+  grid-column-gap: 7px;
+  grid-row-gap: 12px;
 }
 
 .galerie-dyn_item {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+}
+
+.galerie-dyn_item p {
+  font-family: "Work Sans";
+  font-size: 12px;
+  font-weight: 400;
+  text-indent: 1px;
+}
+
+.modale-item input[type="submit"] {
+  font-family: "Syne";
+  font-weight: 700;
+  color: white;
+  background-color: #1d6154;
+  margin: auto;
+  width: auto;
+  text-align: center;
+  border-radius: 60px;
+  padding: 10px 49px 10px 49px;
+  cursor: pointer;
+}
+
+.delete {
+  text-align: center;
+  font-family: "Syne";
+  font-weight: 400;
+  font-size: 14px;
+  color: rgba(214, 83, 83, 1);
+  margin-bottom: 48px;
 }
