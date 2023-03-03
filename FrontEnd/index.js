@@ -37,7 +37,6 @@ const modale = () => {
       </div>
   `;
   modaleFiltre.classList.add("modale-class_visible");
-  // const modaleItem = document.getElementById("modale-item");
 
   const galerieDyn = document.getElementById("galerie-dyn");
   if (dataBaseFiltres === null) {
@@ -173,6 +172,16 @@ const createElementsGalerie = (e, f) => {
         f.innerHTML = "";
         filtresGlobaux = newDataBase;
         createElementsGalerie(newDataBase, galerieDyn);
+
+        filtresAppartements = newDataBase.filter((e) => {
+          return e.category.name.match("Appartements");
+        });
+        filtresObjets = newDataBase.filter((e) => {
+          return e.category.name.match("Objects");
+        });
+        filtresHotels = newDataBase.filter((e) => {
+          return e.category.name.match("Hotels & restaurants");
+        });
       }
     });
   });
@@ -314,24 +323,23 @@ const filtresFinaux = (e) => {
 
   if (components == "Appartements" && filtresAppartements == null) {
     filtresAppartements = dataBaseFiltres;
-    galerie.innerHTML = "";
-    createElements(filtresAppartements);
+    filtresFunction(filtresAppartements);
   } else if (components == "Appartements" && filtresAppartements !== null) {
-    galerie.innerHTML = "";
-    createElements(filtresAppartements);
+    filtresFunction(filtresAppartements);
   } else if (components == "Objets" && filtresObjets == null) {
     filtresObjets = dataBaseFiltres;
-    galerie.innerHTML = "";
-    createElements(filtresObjets);
+    filtresFunction(filtresObjets);
   } else if (components == "Objets" && filtresObjets !== null) {
-    galerie.innerHTML = "";
-    createElements(filtresObjets);
+    filtresFunction(filtresObjets);
   } else if (components == "Hotels & restaurants" && filtresHotels == null) {
     filtresHotels = dataBaseFiltres;
-    galerie.innerHTML = "";
-    createElements(filtresHotels);
+    filtresFunction(filtresHotels);
   } else if (components == "Hotels & restaurants" && filtresHotels !== null) {
-    galerie.innerHTML = "";
-    createElements(filtresHotels);
+    filtresFunction(filtresHotels);
   }
+};
+
+const filtresFunction = (e) => {
+  galerie.innerHTML = "";
+  createElements(e);
 };
