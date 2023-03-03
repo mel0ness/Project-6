@@ -146,10 +146,25 @@ const createElementsGalerie = (e, f) => {
         f.innerHTML = "";
         if (dataBaseFiltres[0].category.name == "Objets") {
           filtresObjets = newDataBaseFiltre;
+          newDataBase = newDataBase.filter((e) => {
+            return e.category.name !== "Objets";
+          });
+          newDataBase.push(...filtresObjets);
+          filtresGlobaux = newDataBase;
         } else if (dataBaseFiltres[0].category.name == "Appartements") {
           filtresAppartements = newDataBaseFiltre;
+          newDataBase = newDataBase.filter((e) => {
+            return e.category.name !== "Appartements";
+          });
+          newDataBase.push(...filtresAppartements);
+          filtresGlobaux = newDataBase;
         } else {
           filtresHotels = newDataBaseFiltre;
+          newDataBase = newDataBase.filter((e) => {
+            return e.category.name !== "Hotels & restaurants";
+          });
+          newDataBase.push(...filtresHotels);
+          filtresGlobaux = newDataBase;
         }
 
         createElementsGalerie(newDataBaseFiltre, galerieDyn);
