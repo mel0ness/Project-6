@@ -7,6 +7,29 @@ let token = "";
 let tokenDate = "";
 let connectedAlert = "";
 
+
+// Préparation choix cookie ou sessionStorage
+const flyingCookie = document.getElementById("flyingcookie");
+const accept = document.getElementById("accept");
+const deny = document.getElementById("deny");
+let cookiez = null;
+
+const selectSessionMode = () => {
+  accept.addEventListener("click", () => {
+    flyingCookie.classList.add("flyingcookieEscape");
+    cookiez = true;
+  })
+  deny.addEventListener("click", () => {
+    flyingCookie.classList.add("flyingcookieEscape");
+    cookiez = false;
+  })
+}
+
+selectSessionMode();
+
+
+// Submit final 
+
 form.addEventListener("submit", (e) => {
   if (user.value.length < 5 || pass.value.length < 5) {
     e.preventDefault();
@@ -42,12 +65,18 @@ async function verif() {
     alert("Mot de passe incorrect");
   } else {
     token = result.token;
-    // window.sessionStorage.setItem("connected", token);
+    if(cookiez == true) {
+      createCookie("connected", "True", 1, token);
+    }
+    else if(cookiez == false) { window.sessionStorage.setItem("connected", token);
     tokenDate = Date.parse(new Date());
-    // window.sessionStorage.setItem("connectedTime", tokenDate);
+    window.sessionStorage.setItem("connectedTime", tokenDate);
     connectedAlert = true;
-    // window.sessionStorage.setItem("connectedAlert", connectedAlert);
-    createCookie("connected", "True", 1, token);
+    window.sessionStorage.setItem("connectedAlert", connectedAlert);}
+
+    
+   
+    
     document.location.href = "./index.html";
   }
 }

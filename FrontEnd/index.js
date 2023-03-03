@@ -8,7 +8,15 @@ let connectedAlert = window.sessionStorage.getItem("connectedAlert");
 const body = document.querySelector("body");
 let newDataBaseFiltre = null;
 let newDataBase = [];
+
+// Cookie work
+
 let ca = document.cookie.split(";");
+let caArrayCookie = (Array.from(ca).filter((e) => {
+  return e.includes("connected=")
+})).toString();
+
+// Connection
 
 const disconnect = () => {
   eraseCookie("connected");
@@ -204,8 +212,7 @@ const verifCo = () => {
       connexionValider();
     }
   } else if (
-    ca[1].includes("connected=True") ||
-    ca[0].includes("connected=True")
+    caArrayCookie.includes("connected=True")
   ) {
     connexionValider();
   }

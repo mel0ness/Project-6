@@ -619,3 +619,45 @@ footer nav ul {
   font-size: 10px;
   color: rgba(68, 68, 68, 1);
 }
+
+.flyingcookie {
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  bottom: 130px;
+  left: 50%;
+  transform: translate(-50%);
+  width: 400px;
+  background-color: white;
+  border: solid teal 2px;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+  padding: 20px;
+  z-index: 11;
+  border-radius: 10px;
+  transition: 2s ease-out;
+  gap: 20px;
+}
+
+.flyingcookie p {
+  max-width: 80%;
+  text-align: justify;
+}
+
+.flyingcookie input {
+  padding: 10px 33px 10px 33px;
+  width: 220px;
+  margin: unset;
+}
+
+.flyingInputs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.flyingcookieEscape {
+  left: -400px;
+}
