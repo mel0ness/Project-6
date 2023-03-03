@@ -18,6 +18,74 @@ let caArrayCookie = (Array.from(ca).filter((e) => {
 
 // Connection
 
+const verifCo = () => {
+  if (connected) {
+    if (date > connectedSecurity) {
+      alert("vous devez vous reconnecter");
+      disconnect();
+    } else {
+      connexionValider();
+    }
+  } else if (
+    caArrayCookie.includes("connected=True")
+  ) {
+    connexionValider();
+  }
+};
+
+const connexionValider = () => {
+  const logout = document.getElementById("logout");
+  logout.innerHTML = "Logout";
+
+  const edition = document.querySelector(".modeEdition");
+  const editionProj = document.querySelector(".editionProj");
+  const modifs = document.getElementById("modif");
+
+  body.classList.add("decal");
+  edition.classList.add("modeEditionLog");
+  editionProj.classList.add("editionProjLog");
+
+  modifs.addEventListener("click", () => {
+    modale();
+  });
+
+  logout.addEventListener("click", () => {
+    disconnect();
+  });
+};
+
+verifCo();
+// Get API and able to use it is a var__________________________________
+const filtres = document.querySelectorAll(".filtres");
+const galerie = document.querySelector(".gallery");
+let dataBase = [];
+
+async function fetchAPI() {
+  galerie.innerHTML = "";
+  const response = await fetch("http://localhost:5678/api/works");
+  dataBase = await response.json();
+  newDataBase = Array.from(dataBase);
+  console.log(dataBase);
+  createElements(dataBase);
+}
+
+fetchAPI();
+
+//Création des éléments en dynamique ______________________________________________________
+
+function createElements(e) {
+  for (let i = 0; i < e.length; i++) {
+    const figure = e[i];
+    const img = document.createElement("figure");
+    img.innerHTML = `<img src=${figure.imageUrl} alt=${figure.title}>
+<figcaption>${figure.title}</figcaption>`;
+
+    galerie.appendChild(img);
+  }
+}
+
+// Deconnexion____________________________________________________________________
+
 const disconnect = () => {
   eraseCookie("connected");
   window.sessionStorage.clear();
@@ -161,27 +229,26 @@ const createElementsGalerie = (e, f) => {
         f.innerHTML = "";
         if (dataBaseFiltres[0].category.name == "Objets") {
           filtresObjets = newDataBaseFiltre;
-          newDataBase = newDataBase.filter((e) => {
-            return e.category.name !== "Objets";
-          });
+          modifInt("Objets")
           newDataBase.push(...filtresObjets);
           filtresGlobaux = newDataBase;
         } else if (dataBaseFiltres[0].category.name == "Appartements") {
           filtresAppartements = newDataBaseFiltre;
-          newDataBase = newDataBase.filter((e) => {
-            return e.category.name !== "Appartements";
-          });
+          modifInt("Appartements")
           newDataBase.push(...filtresAppartements);
           filtresGlobaux = newDataBase;
         } else {
           filtresHotels = newDataBaseFiltre;
-          newDataBase = newDataBase.filter((e) => {
-            return e.category.name !== "Hotels & restaurants";
-          });
+          modifInt("Hotels & restaurants")
           newDataBase.push(...filtresHotels);
           filtresGlobaux = newDataBase;
         }
-
+        filtresGlobaux.sort((a, b) => {
+          return a.id - b.id;
+        })
+        newDataBase.sort((a, b) => {
+          return a.id - b.id;
+        })
         createElementsGalerie(newDataBaseFiltre, galerieDyn);
       } else {
         newDataBase.splice(finalId, 1);
@@ -193,7 +260,7 @@ const createElementsGalerie = (e, f) => {
           return e.category.name.match("Appartements");
         });
         filtresObjets = newDataBase.filter((e) => {
-          return e.category.name.match("Objects");
+          return e.category.name.match("Objets");
         });
         filtresHotels = newDataBase.filter((e) => {
           return e.category.name.match("Hotels & restaurants");
@@ -201,72 +268,12 @@ const createElementsGalerie = (e, f) => {
       }
     });
   });
-};
-
-const verifCo = () => {
-  if (connected) {
-    if (date > connectedSecurity) {
-      alert("vous devez vous reconnecter");
-      disconnect();
-    } else {
-      connexionValider();
-    }
-  } else if (
-    caArrayCookie.includes("connected=True")
-  ) {
-    connexionValider();
-  }
-};
-
-const connexionValider = () => {
-  const logout = document.getElementById("logout");
-  logout.innerHTML = "Logout";
-
-  const edition = document.querySelector(".modeEdition");
-  const editionProj = document.querySelector(".editionProj");
-  const modifs = document.getElementById("modif");
-
-  body.classList.add("decal");
-  edition.classList.add("modeEditionLog");
-  editionProj.classList.add("editionProjLog");
-
-  modifs.addEventListener("click", () => {
-    modale();
-  });
-
-  logout.addEventListener("click", () => {
-    disconnect();
-  });
-};
-
-verifCo();
-// Get API and able to use it is a var__________________________________
-const filtres = document.querySelectorAll(".filtres");
-const galerie = document.querySelector(".gallery");
-let dataBase = [];
-
-async function fetchAPI() {
-  galerie.innerHTML = "";
-  const response = await fetch("http://localhost:5678/api/works");
-  dataBase = await response.json();
-  newDataBase = Array.from(dataBase);
-  console.log(dataBase);
-  createElements(dataBase);
 }
 
-fetchAPI();
-
-//Création des éléments en dynamique ______________________________________________________
-
-function createElements(e) {
-  for (let i = 0; i < e.length; i++) {
-    const figure = e[i];
-    const img = document.createElement("figure");
-    img.innerHTML = `<img src=${figure.imageUrl} alt=${figure.title}>
-<figcaption>${figure.title}</figcaption>`;
-
-    galerie.appendChild(img);
-  }
+const modifInt = (f) => {
+  newDataBase = newDataBase.filter((e) => {
+    return e.category.name !== f;
+  });
 }
 
 //Event sur les filtres______________________________________________________________________
@@ -337,7 +344,9 @@ const filtresFinaux = (e) => {
   dataBaseFiltres = dataBase.filter((d) => {
     return d.category.name == components;
   });
-  newDataBaseFiltre = dataBase.filter((d) => {
+
+
+  newDataBaseFiltre = newDataBase.filter((d) => {
     return d.category.name == components;
   });
 
