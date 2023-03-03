@@ -42,11 +42,26 @@ async function verif() {
     alert("Mot de passe incorrect");
   } else {
     token = result.token;
-    window.localStorage.setItem("connected", token);
+    // window.sessionStorage.setItem("connected", token);
     tokenDate = Date.parse(new Date());
-    window.localStorage.setItem("connectedTime", tokenDate);
+    // window.sessionStorage.setItem("connectedTime", tokenDate);
     connectedAlert = true;
-    window.localStorage.setItem("connectedAlert", connectedAlert);
+    // window.sessionStorage.setItem("connectedAlert", connectedAlert);
+    createCookie("connected", "True", 1, token);
     document.location.href = "./index.html";
   }
 }
+
+const createCookie = (name, value, days, token) => {
+  if (days) {
+    let date = new Date();
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+    let expires = "";
+    expires = "" + date.toISOString();
+    document.cookie =
+      name + " = " + value + " " + expires + " " + token + "; path=/";
+  } else {
+    let expires = "";
+    document.cookie = name + " = " + value + " " + expires + "; path=/";
+  }
+};

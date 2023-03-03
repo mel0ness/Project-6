@@ -1,20 +1,28 @@
 //Solution de rechange en attendant! Comment vérifier le token à chaque chargement? Perdu je suis...
 // Window.localeStorage sur Firefox offline???
-let connectedTime = parseInt(window.localStorage.getItem("connectedTime"));
-let connected = window.localStorage.getItem("connected");
+let connectedTime = parseInt(window.sessionStorage.getItem("connectedTime"));
+let connected = window.sessionStorage.getItem("connected");
 let date = Date.parse(new Date());
-let connectedSecurity = connectedTime + 3600000;
-let connectedAlert = window.localStorage.getItem("connectedAlert");
+let connectedSecurity = connectedTime + 7200000;
+let connectedAlert = window.sessionStorage.getItem("connectedAlert");
 const body = document.querySelector("body");
 let newDataBaseFiltre = null;
 let newDataBase = [];
+let ca = document.cookie.split(";");
 
 const disconnect = () => {
-  window.localStorage.clear();
+  eraseCookie("connected");
+  window.sessionStorage.clear();
   connected = null;
   connectedTime = null;
+
   window.location.reload();
 };
+
+function eraseCookie(name) {
+  document.cookie = name + '=; Path=/; Expires=""';
+  ca = Array.from(document.cookie.split(";"));
+}
 
 //Modale_______________________________________________________________________________
 
@@ -187,39 +195,44 @@ const createElementsGalerie = (e, f) => {
   });
 };
 
-//Locale storage_______________________________________________________________________________
-if (connected) {
-  if (date > connectedSecurity) {
-    alert("vous devez vous reconnecter");
-    disconnect();
-  } else {
-    const logout = document.getElementById("logout");
-    logout.innerHTML = "Logout";
-
-    const edition = document.querySelector(".modeEdition");
-    const editionProj = document.querySelector(".editionProj");
-    const modifs = document.getElementById("modif");
-
-    body.classList.add("decal");
-    edition.classList.add("modeEditionLog");
-    editionProj.classList.add("editionProjLog");
-
-    modifs.addEventListener("click", () => {
-      modale();
-    });
-
-    logout.addEventListener("click", () => {
+const verifCo = () => {
+  if (connected) {
+    if (date > connectedSecurity) {
+      alert("vous devez vous reconnecter");
       disconnect();
-    });
-
-    if (connectedAlert) {
-      alert("connecté");
-      connectedAlert = null;
-      window.localStorage.removeItem("connectedAlert");
+    } else {
+      connexionValider();
     }
+  } else if (
+    ca[1].includes("connected=True") ||
+    ca[0].includes("connected=True")
+  ) {
+    connexionValider();
   }
-}
+};
 
+const connexionValider = () => {
+  const logout = document.getElementById("logout");
+  logout.innerHTML = "Logout";
+
+  const edition = document.querySelector(".modeEdition");
+  const editionProj = document.querySelector(".editionProj");
+  const modifs = document.getElementById("modif");
+
+  body.classList.add("decal");
+  edition.classList.add("modeEditionLog");
+  editionProj.classList.add("editionProjLog");
+
+  modifs.addEventListener("click", () => {
+    modale();
+  });
+
+  logout.addEventListener("click", () => {
+    disconnect();
+  });
+};
+
+verifCo();
 // Get API and able to use it is a var__________________________________
 const filtres = document.querySelectorAll(".filtres");
 const galerie = document.querySelector(".gallery");
