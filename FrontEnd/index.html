@@ -20,7 +20,7 @@
 <body>
 	<div class="body">
 		<div class="modeEdition">
-			<div class="edition"><img src="./assets/icons/carre.png" alt="carré" class="carre"><img
+			<div class="edition" id="modifsHeader"><img src="./assets/icons/carre.png" alt="carré" class="carre"><img
 					src="./assets/icons/crayon.png" alt="crayon" class="crayon">Mode édition</div>
 			<div class="publication">Publier les changement</div>
 
@@ -30,9 +30,15 @@
 		<div class="modale-item" id="modale-item">
 
 		</div>
+		<div class="flyingcookie flyingAccept" id="flyingcookie">
+			<p>Êtes vous sûr(e) de vouloir supprimer cette photo?</p>
+			<div class="flyingInputs"><input type="submit" value="Oui" id="accept">
+				<input type="submit" value="Non" id="deny">
+			</div>
+		</div>
 
 		<header>
-			<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
+			<h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
 			<nav>
 				<ul>
 					<li>projets</li>
@@ -68,9 +74,9 @@
 				</div>
 				<div class="filtres-container">
 					<div class="filtres filtres-selected" id="all">Tous</div>
-					<div class="filtres" id="Objets">Objets</div>
-					<div class="filtres" id="Appartements">Appartements</div>
-					<div class="filtres" id="Hotels_&_restaurants">Hôtels & restaurants</div>
+					<div class="filtres" id="1">Objets</div>
+					<div class="filtres" id="2">Appartements</div>
+					<div class="filtres" id="3">Hôtels & restaurants</div>
 
 				</div>
 				<div class="gallery">

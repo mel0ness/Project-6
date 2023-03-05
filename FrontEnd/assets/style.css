@@ -319,6 +319,8 @@ li:hover {
 
 .gallery img {
   width: 100%;
+  height: 452.6px;
+  object-fit: cover;
 }
 #contact,
 #login {
@@ -546,8 +548,10 @@ footer nav ul {
   margin-bottom: 48px;
 }
 
-.modale-item input[type="submit"].inactive {
+.modale-item input[type="submit"].inactiveOne {
   background-color: rgba(167, 167, 167, 1);
+}
+.modale-item input[type="submit"].inactiveTwo {
   width: 237px;
   border: none;
   margin-bottom: 55px;
@@ -574,6 +578,7 @@ footer nav ul {
 }
 
 .ajout-photo {
+  position: relative;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -601,7 +606,7 @@ footer nav ul {
   left: 11px;
 }
 
-.click-ajout {
+label.click-ajout {
   margin-top: 14px;
   color: rgba(48, 102, 133, 1);
   font-family: "Work Sans";
@@ -612,12 +617,24 @@ footer nav ul {
   border-radius: 50px;
 }
 
+label.click-ajout input {
+  display: none;
+}
+
 .indications {
   margin-bottom: 19px;
   font-family: "Work Sans";
   font-weight: 400;
   font-size: 10px;
   color: rgba(68, 68, 68, 1);
+}
+
+.indicationsRed {
+  margin-bottom: 19px;
+  font-family: "Work Sans";
+  font-weight: 400;
+  font-size: 10px;
+  color: red;
 }
 
 .flyingcookie {
@@ -640,6 +657,15 @@ footer nav ul {
   gap: 20px;
 }
 
+.flyingAccept {
+  position: fixed;
+  display: none;
+}
+
+.surprise {
+  display: flex;
+}
+
 .flyingcookie p {
   max-width: 80%;
   text-align: justify;
@@ -660,4 +686,43 @@ footer nav ul {
 
 .flyingcookieEscape {
   left: -400px;
+}
+
+li,
+.edition {
+  cursor: pointer;
+}
+
+output {
+  position: relative;
+  width: 420px;
+  height: 177px;
+}
+
+output img {
+  position: absolute;
+  width: 100%;
+  height: 177px;
+  object-fit: contain;
+}
+
+.majax {
+  display: none;
+}
+
+label.bigger {
+  position: absolute;
+  margin-top: unset;
+  color: unset;
+  background-color: unset;
+  padding: unset;
+  border-radius: unset;
+  height: 177px;
+  width: 420px;
+}
+
+.img-dyn {
+  width: 100%;
+  height: 103.91px;
+  object-fit: cover;
 }
