@@ -9,12 +9,7 @@ const body = document.querySelector("body");
 let newDataBaseFiltre = null;
 let newDataBase = [];
 let token = "";
-let APIDelete = [];
-if (window.sessionStorage.getItem("Editdelete")) {
-  APIDelete = JSON.parse(window.sessionStorage.getItem("Editdelete"));
-} else {
-  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
-}
+
 // Cookie work_____________________________________________________________
 
 let ca = document.cookie.split(";");
@@ -62,17 +57,10 @@ const modale = () => {
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-    if (difference != "") {
-      DeleteData(difference);
-    }
   });
 
   modaleFiltre.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-
-    if (difference != "") {
-      DeleteData(difference);
-    }
   });
   const ajout = document.getElementById("ajouter-click");
   ajout.addEventListener("click", () => {
@@ -138,64 +126,6 @@ async function fetchAPI() {
 
 fetchAPI();
 
-// Session storage delete__________________________________________________________________
-let difference = [];
-let APIstock = [];
-let APIDeleteD = [];
-
-const APIStock = (e) => {
-  APIstock = [];
-  if (difference !== [])
-    for (let i in e) {
-      APIstock.push(e[i].id);
-    }
-};
-
-const stocking = () => {
-  APIStock(difference);
-  APIstock = [...new Set(APIstock)];
-  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
-  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
-};
-
-const DeleteData = (e) => {
-  if (e.length > 0) {
-    let deleting = e[0].id;
-    function EnvoieDelete() {
-      fetch(`http://localhost:5678/api/works/${deleting}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-    EnvoieDelete();
-  }
-};
-
-const DeleteDataContinue = (e) => {
-  if (e.length > 0) {
-    let deleting = e[0];
-    function EnvoieDelete() {
-      fetch(`http://localhost:5678/api/works/${deleting}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-    EnvoieDelete();
-  }
-};
-if (APIDelete !== null) {
-  if (APIDelete.length > 0) {
-    APIDelete.splice(0, 1);
-    console.log(APIDelete);
-    window.sessionStorage.setItem("Apidelete", JSON.stringify(APIDelete));
-    DeleteDataContinue(APIDelete);
-  }
-}
-
 //Création des éléments en dynamique ______________________________________________________
 
 function createElements(e) {
@@ -252,12 +182,6 @@ const DeletingAll = () => {
     } else {
       newDataBase = [];
     }
-    difference = dataBase.filter((x) => !newDataBase.includes(x));
-    APIStock(difference);
-    APIstock = [...new Set(APIstock)];
-    window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
-    APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
-    DeleteData(difference);
   });
 
   denyDeleteGalerie.addEventListener("click", () => {
@@ -324,10 +248,6 @@ const modaleAjout = () => {
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-
-    if (difference != "") {
-      DeleteData(difference);
-    }
   });
 
   const back = document.getElementById("back");
@@ -338,12 +258,6 @@ const modaleAjout = () => {
 };
 
 const validateAPI = () => {
-  if (APIEditionSelect.length > 1) {
-    window.sessionStorage.setItem(
-      "Apidelete",
-      JSON.stringify(APIEditionSelect)
-    );
-  }
   const newPhoto = document.getElementById("newPhoto");
   newPhoto.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -360,7 +274,6 @@ const validateAPI = () => {
       });
     }
     envoieAPI();
-    DeleteData(difference);
   });
 };
 
@@ -391,7 +304,6 @@ const createElementsGalerie = (e, f) => {
     bin.innerHTML = `<img src="./assets/icons/bin.svg" alt="bin">`;
     bin.id = `Super${img.id}`;
     img.appendChild(bin);
-
     bin.addEventListener("click", () => {
       const deleteReally = document.getElementById("flyingcookie");
       const yesDelete = document.getElementById("accept");
@@ -403,54 +315,97 @@ const createElementsGalerie = (e, f) => {
         deleteReally.classList.remove("surprise");
       });
 
-      yesDelete.addEventListener("click", () => {
-        deleteReally.classList.remove("surprise");
-        let NumberToUse = bin.id.slice(7);
-        if (dataBaseFiltres) {
-          newDataBaseFiltre.splice(NumberToUse, 1);
-          if (dataBaseFiltres[0].categoryId == 1) {
-            filtresObjets = newDataBaseFiltre;
-            modifInt(1);
-            newDataBase.push(...filtresObjets);
-            filtresGlobaux = newDataBase;
-            if (document.getElementById(`id${NumberToUse}`)) {
-              document.getElementById(`id${NumberToUse}`).remove();
-            }
-          } else if (dataBaseFiltres[0].categoryId == 2) {
-            filtresAppartements = newDataBaseFiltre;
-            modifInt(2);
-            newDataBase.push(...filtresAppartements);
-            filtresGlobaux = newDataBase;
-            if (document.getElementById(`id${NumberToUse}`)) {
-              document.getElementById(`id${NumberToUse}`).remove();
-            }
-          } else {
-            filtresHotels = newDataBaseFiltre;
-            modifInt(3);
-            newDataBase.push(...filtresHotels);
-            filtresGlobaux = newDataBase;
-            if (document.getElementById(`id${NumberToUse}`)) {
-              document.getElementById(`id${NumberToUse}`).remove();
-            }
-          }
-          filtresGlobaux.sort((a, b) => {
-            return a.id - b.id;
-          });
-          newDataBase.sort((a, b) => {
-            return a.id - b.id;
-          });
-        } else {
-          newDataBase.splice(NumberToUse, 1);
-          if (document.getElementById(`id${NumberToUse}`)) {
-            document.getElementById(`id${NumberToUse}`).remove();
-          }
-        }
-
-        difference = dataBase.filter((x) => !newDataBase.includes(x));
-        stocking();
-      });
+      yesDelete.addEventListener(
+        "click",
+        () => {
+          deleteReally.classList.remove("surprise");
+          ActionDelete(bin);
+          bin.replaceWith(bin.cloneNode(true));
+        },
+        { once: true }
+      );
     });
   }
+};
+
+let difference = [];
+const ActionDelete = (bin) => {
+  const galerieDyn = document.getElementById("galerie-dyn");
+  let NumberToUse = bin.id.slice(7);
+  if (dataBaseFiltres) {
+    newDataBaseFiltre.splice(NumberToUse, 1);
+    if (dataBaseFiltres[0].categoryId == 1) {
+      filtresObjets = newDataBaseFiltre;
+      modifInt(1);
+      newDataBase.push(...filtresObjets);
+      filtresGlobaux = newDataBase;
+      difference.splice(0, 1);
+      difference = dataBase.filter((x) => !newDataBase.includes(x));
+      DeleteData(difference[0]);
+      dataBase = newDataBase;
+      galerieDyn.innerHTML = "";
+      createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    } else if (dataBaseFiltres[0].categoryId == 2) {
+      filtresAppartements = newDataBaseFiltre;
+      modifInt(2);
+      newDataBase.push(...filtresAppartements);
+      filtresGlobaux = newDataBase;
+      difference.splice(0, 1);
+      difference = dataBase.filter((x) => !newDataBase.includes(x));
+      DeleteData(difference[0]);
+      dataBase = newDataBase;
+      galerieDyn.innerHTML = "";
+      createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    } else {
+      filtresHotels = newDataBaseFiltre;
+      modifInt(3);
+      newDataBase.push(...filtresHotels);
+      filtresGlobaux = newDataBase;
+      difference.splice(0, 1);
+      difference = dataBase.filter((x) => !newDataBase.includes(x));
+      DeleteData(difference[0]);
+      dataBase = newDataBase;
+      galerieDyn.innerHTML = "";
+      createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    }
+    filtresGlobaux.sort((a, b) => {
+      return a.id - b.id;
+    });
+    newDataBase.sort((a, b) => {
+      return a.id - b.id;
+    });
+  } else {
+    newDataBase.splice(NumberToUse, 1);
+    difference.splice(0, 1);
+    difference = dataBase.filter((x) => !newDataBase.includes(x));
+    DeleteData(difference[0]);
+    filtresGlobaux = newDataBase;
+    galerieDyn.innerHTML = "";
+    createElementsGalerie(newDataBase, galerieDyn);
+    filtresObjets = newDataBase.filter((d) => {
+      return d.categoryId == 1;
+    });
+    filtresAppartements = newDataBase.filter((d) => {
+      return d.categoryId == 2;
+    });
+    filtresHotels = newDataBase.filter((d) => {
+      return d.categoryId == 3;
+    });
+  }
+};
+
+const DeleteData = (e) => {
+  let numberToDelete = e.id;
+  console.log(numberToDelete);
+  async function EnvoieDelete() {
+    await fetch(`http://localhost:5678/api/works/${numberToDelete}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  }
+  EnvoieDelete();
 };
 
 let APIEditionSelect = [];
@@ -532,10 +487,6 @@ const modaleEdition = (e) => {
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-
-    if (difference != "") {
-      DeleteData(difference);
-    }
   });
 
   const back = document.getElementById("back");
