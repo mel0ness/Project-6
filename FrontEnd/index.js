@@ -11,33 +11,6 @@ let newDataBase = [];
 let token = "";
 let APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
 
-// Session storage delete__________________________________________________________________
-let difference = [];
-let APIstock = [];
-let APIDeleteD = [];
-
-const APIStock = (e) => {
-  APIstock = [];
-  if (difference !== [])
-    for (let i in e) {
-      APIstock.push(e[i].id);
-    }
-};
-
-const stocking = () => {
-  APIStock(difference);
-  APIstock = [...new Set(APIstock)];
-  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
-  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
-};
-
-if (APIDelete !== []) {
-  APIDelete.splice(0, 1);
-  console.log(APIDelete);
-  difference = APIDelete;
-  stocking();
-}
-
 // Cookie work_____________________________________________________________
 
 let ca = document.cookie.split(";");
@@ -48,6 +21,60 @@ let caArrayCookie = Array.from(ca)
   .toString();
 
 // Connection
+
+//Modale_______________________________________________________________________________
+
+const modale = () => {
+  const modaleFiltre = document.getElementById("modale");
+  const modaleDiv = document.getElementById("modale-item");
+  modaleDiv.innerHTML = `
+      <div class="cross" id="cross">
+        <div class="cross-elem cross-left"></div>
+        <div class="cross-elem cross-right"></div>
+      </div>
+      <div class="modale-galerie">
+        <h3>Galerie photo</h3>
+        <div class="galerie-dyn" id="galerie-dyn">
+
+        </div>
+        <div class="line"></div>
+        <input type="submit" value="Ajouter une photo" id="ajouter-click">
+        <p class="delete" id="supprimerGalerie">Supprimer la galerie</p>
+      </div>
+  `;
+  modaleFiltre.classList.add("modale-class_visible");
+  const deleteAllGalerie = document.getElementById("supprimerGalerie");
+  deleteAllGalerie.addEventListener("click", () => {
+    DeletingAll();
+  });
+
+  const galerieDyn = document.getElementById("galerie-dyn");
+  if (dataBaseFiltres === null) {
+    createElementsGalerie(newDataBase, galerieDyn);
+  } else {
+    createElementsGalerie(newDataBaseFiltre, galerieDyn);
+  }
+
+  const cross = document.getElementById("cross");
+  cross.addEventListener("click", () => {
+    fermeture(modaleDiv, modaleFiltre);
+    if (difference != "") {
+      DeleteData(difference);
+    }
+  });
+
+  modaleFiltre.addEventListener("click", () => {
+    fermeture(modaleDiv, modaleFiltre);
+
+    if (difference != "") {
+      DeleteData(difference);
+    }
+  });
+  const ajout = document.getElementById("ajouter-click");
+  ajout.addEventListener("click", () => {
+    modaleAjout();
+  });
+};
 
 const verifCo = () => {
   if (connected) {
@@ -107,6 +134,63 @@ async function fetchAPI() {
 
 fetchAPI();
 
+// Session storage delete__________________________________________________________________
+let difference = [];
+let APIstock = [];
+let APIDeleteD = [];
+
+const APIStock = (e) => {
+  APIstock = [];
+  if (difference !== [])
+    for (let i in e) {
+      APIstock.push(e[i].id);
+    }
+};
+
+const stocking = () => {
+  APIStock(difference);
+  APIstock = [...new Set(APIstock)];
+  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
+  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+};
+
+const DeleteData = (e) => {
+  if (e.length > 0) {
+    let deleting = e[0].id;
+    function EnvoieDelete() {
+      fetch(`http://localhost:5678/api/works/${deleting}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+    EnvoieDelete();
+  }
+};
+
+const DeleteDataContinue = (e) => {
+  if (e.length > 0) {
+    let deleting = e[0];
+    function EnvoieDelete() {
+      fetch(`http://localhost:5678/api/works/${deleting}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+    EnvoieDelete();
+  }
+};
+
+if (APIDelete.length > 0) {
+  APIDelete.splice(0, 1);
+  console.log(APIDelete);
+  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIDelete));
+  DeleteDataContinue(APIDelete);
+}
+
 //Création des éléments en dynamique ______________________________________________________
 
 function createElements(e) {
@@ -135,60 +219,6 @@ function eraseCookie(name) {
   document.cookie = name + '=; Path=/; Expires=""';
   ca = Array.from(document.cookie.split(";"));
 }
-
-//Modale_______________________________________________________________________________
-
-const modale = () => {
-  const modaleFiltre = document.getElementById("modale");
-  const modaleDiv = document.getElementById("modale-item");
-  modaleDiv.innerHTML = `
-      <div class="cross" id="cross">
-        <div class="cross-elem cross-left"></div>
-        <div class="cross-elem cross-right"></div>
-      </div>
-      <div class="modale-galerie">
-        <h3>Galerie photo</h3>
-        <div class="galerie-dyn" id="galerie-dyn">
-
-        </div>
-        <div class="line"></div>
-        <input type="submit" value="Ajouter une photo" id="ajouter-click">
-        <p class="delete" id="supprimerGalerie">Supprimer la galerie</p>
-      </div>
-  `;
-  modaleFiltre.classList.add("modale-class_visible");
-  const deleteAllGalerie = document.getElementById("supprimerGalerie");
-  deleteAllGalerie.addEventListener("click", () => {
-    // DeletingAll();
-  });
-
-  const galerieDyn = document.getElementById("galerie-dyn");
-  if (dataBaseFiltres === null) {
-    createElementsGalerie(newDataBase, galerieDyn);
-  } else {
-    createElementsGalerie(newDataBaseFiltre, galerieDyn);
-  }
-
-  const cross = document.getElementById("cross");
-  cross.addEventListener("click", () => {
-    fermeture(modaleDiv, modaleFiltre);
-    if (difference != "") {
-      DeleteData(difference);
-    }
-  });
-
-  modaleFiltre.addEventListener("click", () => {
-    fermeture(modaleDiv, modaleFiltre);
-
-    if (difference != "") {
-      DeleteData(difference);
-    }
-  });
-  const ajout = document.getElementById("ajouter-click");
-  ajout.addEventListener("click", () => {
-    modaleAjout();
-  });
-};
 
 const DeletingAll = () => {
   const flyinDeleteGalerie = document.getElementById("flyinDeleteGalerie");
@@ -222,6 +252,7 @@ const DeletingAll = () => {
     APIstock = [...new Set(APIstock)];
     window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
     APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+    DeleteData(difference);
   });
 
   denyDeleteGalerie.addEventListener("click", () => {
@@ -307,28 +338,20 @@ const validateAPI = () => {
     e.preventDefault();
 
     formulaireData = new FormData(newPhoto);
-    for (let obj of formulaireData) {
-      console.log(obj);
-    }
 
     async function envoieAPI() {
-      let response = await fetch("http://localhost:5678/api/works", {
+      await fetch("http://localhost:5678/api/works", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
         },
         body: formulaireData,
       });
-
-      let result = await response.json();
-      console.log(result);
     }
     envoieAPI();
     DeleteData(difference);
   });
 };
-
-let Choice = null;
 
 const createElementsGalerie = (e, f) => {
   for (let i = 0; i < e.length; i++) {
@@ -383,7 +406,9 @@ const createElementsGalerie = (e, f) => {
             modifInt(3);
             newDataBase.push(...filtresHotels);
             filtresGlobaux = newDataBase;
-            document.getElementById(`id${NumberToUse}`).remove();
+            if (document.getElementById(`id${NumberToUse}`)) {
+              document.getElementById(`id${NumberToUse}`).remove();
+            }
           }
           filtresGlobaux.sort((a, b) => {
             return a.id - b.id;
@@ -393,7 +418,9 @@ const createElementsGalerie = (e, f) => {
           });
         } else {
           newDataBase.splice(NumberToUse, 1);
-          document.getElementById(`id${NumberToUse}`).remove();
+          if (document.getElementById(`id${NumberToUse}`)) {
+            document.getElementById(`id${NumberToUse}`).remove();
+          }
         }
 
         difference = dataBase.filter((x) => !newDataBase.includes(x));
@@ -401,87 +428,8 @@ const createElementsGalerie = (e, f) => {
       });
     });
   }
-  // deleteIncomming();
 };
 
-// const deleteIncomming = () => {
-//   const deleteImg = document.querySelectorAll(".logo-black");
-
-//   deleteImg.forEach((e) => {
-//     e.addEventListener("click", () => {
-//       const deleteReally = document.getElementById("flyingcookie");
-//       const yesDelete = document.getElementById("accept");
-//       const noDont = document.getElementById("deny");
-
-//       deleteReally.classList.add("surprise");
-
-//       noDont.addEventListener("click", () => {
-//         deleteReally.classList.remove("surprise");
-//       });
-
-//       yesDelete.addEventListener("click", () => {
-//         deleteReally.classList.remove("surprise");
-//         const galerieDyn = document.getElementById("galerie-dyn");
-
-//         let superId = e.id;
-//         let finalId = Number(superId.slice(7)) - 1;
-//         if (dataBaseFiltres) {
-//           newDataBaseFiltre.splice(finalId, 1);
-//           if (dataBaseFiltres[0].categoryId == 1) {
-//             filtresObjets = newDataBaseFiltre;
-//             modifInt(1);
-//             newDataBase.push(...filtresObjets);
-//             filtresGlobaux = newDataBase;
-//             galerieDyn.remove();
-//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
-//           } else if (dataBaseFiltres[0].categoryId == 2) {
-//             filtresAppartements = newDataBaseFiltre;
-//             modifInt(2);
-//             newDataBase.push(...filtresAppartements);
-//             filtresGlobaux = newDataBase;
-//             galerieDyn.innerHTML = "";
-//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
-//           } else {
-//             filtresHotels = newDataBaseFiltre;
-//             modifInt(3);
-//             newDataBase.push(...filtresHotels);
-//             filtresGlobaux = newDataBase;
-//             galerieDyn.innerHTML = "";
-//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
-//           }
-//           filtresGlobaux.sort((a, b) => {
-//             return a.id - b.id;
-//           });
-//           newDataBase.sort((a, b) => {
-//             return a.id - b.id;
-//           });
-//         } else {
-//           newDataBase.splice(finalId, 1);
-//           galerieDyn.innerHTML = "";
-//           createElementsGalerie(newDataBase, galerieDyn);
-//         }
-
-//         difference = dataBase.filter((x) => !newDataBase.includes(x));
-//         stocking();
-//       });
-//     });
-//   });
-// };
-
-const DeleteData = (e) => {
-  let deleting = e[0].id;
-  function EnvoieDelete() {
-    fetch(`http://localhost:5678/api/works/${deleting}`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-  }
-  EnvoieDelete();
-
-  stocking();
-};
 const modifInt = (f) => {
   newDataBase = newDataBase.filter((e) => {
     return e.categoryId !== f;
@@ -491,8 +439,6 @@ const modifInt = (f) => {
 //Import d'une image_________________________________________________________________________
 
 let imageReady = false;
-let imgToPull = [];
-let imgURL = "";
 
 const innerCreateImg = () => {
   const inputFile = document.getElementById("inputFile");
@@ -540,24 +486,15 @@ const innerCreateImg = () => {
 
   const displayImg = () => {
     let images = "";
-    images += `<img src="${URL.createObjectURL(imageUpload[0])}" alt="image">`;
+    images += `<img src="${URL.createObjectURL(
+      imageUpload[0]
+    )}" alt="imageUpload">`;
 
     outputImg.innerHTML = images;
   };
 };
 
 // Validation formulaire_______________________________________________________________________
-
-let categoryIdObtainNumber = "";
-class newPhotoClass {
-  constructor(id, title, imageUrl, categoryId, userId) {
-    this.id = id;
-    this.title = title;
-    this.imageUrl = imageUrl;
-    this.categoryId = categoryId;
-    this.userId = userId;
-  }
-}
 
 const formFunctionnal = () => {
   const submit = document.getElementById("validationPhoto");
@@ -574,34 +511,12 @@ const formFunctionnal = () => {
       ) {
         submit.classList.remove("inactiveOne");
         submit.removeAttribute("disabled");
-        formValidationEnvoieImg(categorieNew, nameNew);
       } else if (!submit.disabled) {
         submit.classList.add("inactiveOne");
         submit.setAttribute("disabled");
       }
     });
   });
-};
-
-const formValidationEnvoieImg = (d, f) => {
-  let classCreation = new newPhotoClass(
-    dataBase.length + 1,
-    f.value,
-    imgURL,
-    d.value,
-    0
-  );
-
-  dataBase.push(classCreation);
-  newDataBase.push(classCreation);
-
-  if (d.value == 1 && filtresObjets !== null) {
-    filtresObjets.push(classCreation);
-  } else if (d.value == 2 && filtresAppartements !== null) {
-    filtresAppartements.push(classCreation);
-  } else if (d.value == 3 && filtresHotels !== null) {
-    filtresHotels.push(classCreation);
-  }
 };
 
 //Event sur les filtres______________________________________________________________________
