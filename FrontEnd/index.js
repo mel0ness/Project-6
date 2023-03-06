@@ -183,12 +183,13 @@ const DeleteDataContinue = (e) => {
     EnvoieDelete();
   }
 };
-
-if (APIDelete.length > 0) {
-  APIDelete.splice(0, 1);
-  console.log(APIDelete);
-  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIDelete));
-  DeleteDataContinue(APIDelete);
+if (APIDelete !== null) {
+  if (APIDelete.length > 0) {
+    APIDelete.splice(0, 1);
+    console.log(APIDelete);
+    window.sessionStorage.setItem("Apidelete", JSON.stringify(APIDelete));
+    DeleteDataContinue(APIDelete);
+  }
 }
 
 //Création des éléments en dynamique ______________________________________________________
