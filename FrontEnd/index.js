@@ -9,8 +9,12 @@ const body = document.querySelector("body");
 let newDataBaseFiltre = null;
 let newDataBase = [];
 let token = "";
-let APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
-
+let APIDelete = [];
+if (window.sessionStorage.getItem("Editdelete")) {
+  APIDelete = JSON.parse(window.sessionStorage.getItem("Editdelete"));
+} else {
+  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+}
 // Cookie work_____________________________________________________________
 
 let ca = document.cookie.split(";");
@@ -334,6 +338,12 @@ const modaleAjout = () => {
 };
 
 const validateAPI = () => {
+  if (APIEditionSelect.length > 1) {
+    window.sessionStorage.setItem(
+      "Apidelete",
+      JSON.stringify(APIEditionSelect)
+    );
+  }
   const newPhoto = document.getElementById("newPhoto");
   newPhoto.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -354,16 +364,28 @@ const validateAPI = () => {
   });
 };
 
+let editionSelect = {};
+
 const createElementsGalerie = (e, f) => {
   for (let i = 0; i < e.length; i++) {
     const item = e[i];
     const img = document.createElement("div");
     img.classList.add("galerie-dyn_item");
     img.id = `id${parseInt(i)}`;
-    img.innerHTML = `<img src=${item.imageUrl} alt=${item.title} class="img-dyn"></div>
-      <p>éditer</p><div class="logo-black2"><img src="./assets/icons/multicross.svg" alt="multicross"></div>`;
+    img.innerHTML = `<img src=${item.imageUrl} alt=${item.title} class="img-dyn">
+     <div class="logo-black2"><img src="./assets/icons/multicross.svg" alt="multicross"></div>`;
 
     f.appendChild(img);
+
+    const edit = document.createElement("p");
+    edit.textContent = "éditer";
+    edit.id = `edit${img.id}`;
+    img.appendChild(edit);
+
+    edit.addEventListener("click", () => {
+      modaleEdition(edit);
+    });
+
     const bin = document.createElement("div");
     bin.classList.add("logo-black");
     bin.innerHTML = `<img src="./assets/icons/bin.svg" alt="bin">`;
@@ -431,6 +453,142 @@ const createElementsGalerie = (e, f) => {
   }
 };
 
+let APIEditionSelect = [];
+
+const modaleEdition = (e) => {
+  editionSelect = dataBase[e.id.slice(6)];
+  APIEditionSelect = [editionSelect.id, editionSelect.id];
+  let editionSelectTitle = editionSelect.title;
+  let editionSelectCategory = editionSelect.category.name;
+  let editionSelectCategoryValue = null;
+  if (editionSelectCategory == "Objets") {
+    editionSelectCategoryValue = 1;
+  }
+  if (editionSelectCategory == "Appartements") {
+    editionSelectCategoryValue = 2;
+  }
+  if (editionSelectCategory == "Hotels & restaurants") {
+    editionSelectCategoryValue = 3;
+  }
+
+  const modaleFiltre = document.getElementById("modale");
+  const modaleDiv = document.getElementById("modale-item");
+  modaleDiv.innerHTML = `
+  <img src="./assets/icons/Arrow_Back.png" alt="flêche de retour"
+  id="back" class="back">
+<div class="cross" id="cross">
+  <div class="cross-elem cross-left"></div>
+  <div class="cross-elem cross-right"></div>
+</div>
+<form action="" method="post" id="newPhoto" name="newPhoto">
+<div class="modale-ajout">
+  <h3>Ajout photo</h3>
+
+ 
+  <div class="ajout-photo">
+ 
+  <output id="output"></output>
+
+    <label class="click-ajout bigger" id="inputFile" for="image"><div class="inlabel" id="inlabel"></div><input type="file" accept="image/png, image/jpg, image/jpeg" id="image" name="image" ></input></label>
+    <div class="indicationsRed majax" id="indicationsRed">Le fichier ne doit pas dépasser 4mo!</div>
+  </div>
+  <label for="title">Titre</label>
+  <input id="title" name="title" type="text" value="${editionSelectTitle}">
+  <label for="category">Catégorie</label>
+  <select name="category" id="category">
+    <option value="" ></option>
+    <option value="1">Objets</option>
+    <option value="2">Appartements</option>
+    <option value="3">Hotels & restaurants</option>
+
+  </select>
+  <div class="line"></div>
+  <input type="submit" value="Valider" class="inactiveOne inactiveTwo" disabled id="validationPhoto">
+  </form>
+</div>`;
+
+  const selectValue = (e) => {
+    const selectForm = document.getElementById("category");
+    selectForm.value = e;
+  };
+
+  selectValue(editionSelectCategoryValue);
+
+  const outputImg = document.getElementById("output");
+
+  const displayImgEdit = (e) => {
+    let images = "";
+    images += `<img src=${e} alt="imageUpload">`;
+
+    outputImg.innerHTML = images;
+  };
+
+  displayImgEdit(editionSelect.imageUrl);
+
+  innerCreateImgEdit();
+
+  formFunctionnal();
+  validateAPI();
+  const cross = document.getElementById("cross");
+  cross.addEventListener("click", () => {
+    fermeture(modaleDiv, modaleFiltre);
+
+    if (difference != "") {
+      DeleteData(difference);
+    }
+  });
+
+  const back = document.getElementById("back");
+  back.addEventListener("click", () => {
+    modaleDiv.innerHTML = "";
+    modale();
+  });
+};
+
+const innerCreateImgEdit = () => {
+  const inputImg = document.getElementById("image");
+  const outputImg = document.getElementById("output");
+  const imageIndicationsRed = document.getElementById("indicationsRed");
+  let imageUpload = [];
+
+  inputImg.addEventListener("change", () => {
+    const file = inputImg.files;
+    imgURL = inputImg.value;
+    imageUpload.push(file[0]);
+    if (imageUpload[0] == undefined) {
+      imageUpload = [];
+    } else {
+      if (imageUpload[0].size > 4000000) {
+        imageIndicationsRed.classList.remove("majax");
+        imageUpload = [];
+      } else {
+        imageIndicationsRed.classList.add("majax");
+        displayImg();
+        imageReady = true;
+        imgToPull = [];
+        imgToPull.push(...imageUpload);
+        const categorieNew = document.getElementById("category");
+        const nameNew = document.getElementById("title");
+        const submit = document.getElementById("validationPhoto");
+        if (categorieNew.value !== "" && nameNew.value !== "") {
+          submit.classList.remove("inactiveOne");
+          submit.removeAttribute("disabled");
+        }
+        imageUpload = [];
+      }
+    }
+  });
+
+  const displayImg = () => {
+    let images = "";
+    images += `<img src="${URL.createObjectURL(
+      imageUpload[0]
+    )}" alt="imageUpload">`;
+
+    outputImg.innerHTML = images;
+  };
+};
+
 const modifInt = (f) => {
   newDataBase = newDataBase.filter((e) => {
     return e.categoryId !== f;
@@ -478,7 +636,6 @@ const innerCreateImg = () => {
         if (categorieNew.value !== "" && nameNew.value !== "") {
           submit.classList.remove("inactiveOne");
           submit.removeAttribute("disabled");
-          formValidationEnvoieImg(categorieNew, nameNew);
         }
         imageUpload = [];
       }
