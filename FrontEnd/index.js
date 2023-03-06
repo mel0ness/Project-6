@@ -9,6 +9,35 @@ const body = document.querySelector("body");
 let newDataBaseFiltre = null;
 let newDataBase = [];
 let token = "";
+let APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+
+// Session storage delete__________________________________________________________________
+let difference = [];
+let APIstock = [];
+let APIDeleteD = [];
+
+const APIStock = (e) => {
+  APIstock = [];
+  if (difference !== [])
+    for (let i in e) {
+      APIstock.push(e[i].id);
+    }
+};
+
+const stocking = () => {
+  APIStock(difference);
+  APIstock = [...new Set(APIstock)];
+  window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
+  APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+};
+
+if (APIDelete !== []) {
+  APIDelete.splice(0, 1);
+  console.log(APIDelete);
+  difference = APIDelete;
+  stocking();
+}
+
 // Cookie work_____________________________________________________________
 
 let ca = document.cookie.split(";");
@@ -124,10 +153,14 @@ const modale = () => {
         </div>
         <div class="line"></div>
         <input type="submit" value="Ajouter une photo" id="ajouter-click">
-        <p class="delete">Supprimer la galerie</p>
+        <p class="delete" id="supprimerGalerie">Supprimer la galerie</p>
       </div>
   `;
   modaleFiltre.classList.add("modale-class_visible");
+  const deleteAllGalerie = document.getElementById("supprimerGalerie");
+  deleteAllGalerie.addEventListener("click", () => {
+    // DeletingAll();
+  });
 
   const galerieDyn = document.getElementById("galerie-dyn");
   if (dataBaseFiltres === null) {
@@ -135,19 +168,64 @@ const modale = () => {
   } else {
     createElementsGalerie(newDataBaseFiltre, galerieDyn);
   }
+
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-    DeleteData(difference);
+    if (difference != "") {
+      DeleteData(difference);
+    }
   });
 
   modaleFiltre.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-    DeleteData(difference);
+
+    if (difference != "") {
+      DeleteData(difference);
+    }
   });
   const ajout = document.getElementById("ajouter-click");
   ajout.addEventListener("click", () => {
     modaleAjout();
+  });
+};
+
+const DeletingAll = () => {
+  const flyinDeleteGalerie = document.getElementById("flyinDeleteGalerie");
+  flyinDeleteGalerie.classList.add("surprise");
+  const acceptDeleteGalerie = document.getElementById("acceptDeleteGalerie");
+  const denyDeleteGalerie = document.getElementById("denyDeleteGalerie");
+
+  acceptDeleteGalerie.addEventListener("click", () => {
+    if (newDataBaseFiltre) {
+      if (dataBaseFiltres[0].categoryId == 1) {
+        newDataBaseFiltre = [];
+        filtresObjets = newDataBaseFiltre;
+        modifInt(1);
+        filtresGlobaux = newDataBase;
+      } else if (dataBaseFiltres[0].categoryId == 2) {
+        newDataBaseFiltre = [];
+        filtresAppartements = newDataBaseFiltre;
+        modifInt(2);
+        filtresGlobaux = newDataBase;
+      } else {
+        newDataBaseFiltre = [];
+        filtresHotels = newDataBaseFiltre;
+        modifInt(3);
+        filtresGlobaux = newDataBase;
+      }
+    } else {
+      newDataBase = [];
+    }
+    difference = dataBase.filter((x) => !newDataBase.includes(x));
+    APIStock(difference);
+    APIstock = [...new Set(APIstock)];
+    window.sessionStorage.setItem("Apidelete", JSON.stringify(APIstock));
+    APIDelete = JSON.parse(window.sessionStorage.getItem("Apidelete"));
+  });
+
+  denyDeleteGalerie.addEventListener("click", () => {
+    flyinDeleteGalerie.classList.remove("surprise");
   });
 };
 
@@ -210,7 +288,10 @@ const modaleAjout = () => {
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
-    DeleteData(difference);
+
+    if (difference != "") {
+      DeleteData(difference);
+    }
   });
 
   const back = document.getElementById("back");
@@ -236,74 +317,73 @@ const validateAPI = () => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        // body: new FormData(newPhoto),
         body: formulaireData,
       });
 
       let result = await response.json();
-
       console.log(result);
     }
     envoieAPI();
+    DeleteData(difference);
   });
 };
 
 let Choice = null;
-let difference = [];
 
 const createElementsGalerie = (e, f) => {
   for (let i = 0; i < e.length; i++) {
     const item = e[i];
     const img = document.createElement("div");
     img.classList.add("galerie-dyn_item");
-    img.id = `id${parseInt(i) + 1}`;
-    img.innerHTML = `<img src=${item.imageUrl} alt=${item.title} class="img-dyn">	<div class="logo-black" id="super${img.id}"><img src="./assets/icons/bin.svg" alt="bin"></div>
-    <p>éditer</p>
-`;
+    img.id = `id${parseInt(i)}`;
+    img.innerHTML = `<img src=${item.imageUrl} alt=${item.title} class="img-dyn"></div>
+      <p>éditer</p><div class="logo-black2"><img src="./assets/icons/multicross.svg" alt="multicross"></div>`;
 
     f.appendChild(img);
-    const numberOne = document.getElementById("id1");
-    numberOne.innerHTML += `<div class="logo-black2"><img src="./assets/icons/multicross.svg" alt="multicross"></div>`;
-  }
+    const bin = document.createElement("div");
+    bin.classList.add("logo-black");
+    bin.innerHTML = `<img src="./assets/icons/bin.svg" alt="bin">`;
+    bin.id = `Super${img.id}`;
+    img.appendChild(bin);
 
-  const deleteImg = document.querySelectorAll(".logo-black");
-  const galerieDyn = document.getElementById("galerie-dyn");
-
-  deleteImg.forEach((e) => {
-    e.addEventListener("click", () => {
+    bin.addEventListener("click", () => {
       const deleteReally = document.getElementById("flyingcookie");
       const yesDelete = document.getElementById("accept");
       const noDont = document.getElementById("deny");
 
       deleteReally.classList.add("surprise");
+
+      noDont.addEventListener("click", () => {
+        deleteReally.classList.remove("surprise");
+      });
+
       yesDelete.addEventListener("click", () => {
         deleteReally.classList.remove("surprise");
-        let superId = e.id;
-        let finalId = Number(superId.slice(7)) - 1;
+        let NumberToUse = bin.id.slice(7);
         if (dataBaseFiltres) {
-          newDataBaseFiltre.splice(finalId, 1);
-          f.innerHTML = "";
+          newDataBaseFiltre.splice(NumberToUse, 1);
           if (dataBaseFiltres[0].categoryId == 1) {
             filtresObjets = newDataBaseFiltre;
             modifInt(1);
             newDataBase.push(...filtresObjets);
             filtresGlobaux = newDataBase;
-            galerieDyn.innerHTML = "";
-            createElementsGalerie(newDataBaseFiltre, galerieDyn);
+            if (document.getElementById(`id${NumberToUse}`)) {
+              document.getElementById(`id${NumberToUse}`).remove();
+            }
           } else if (dataBaseFiltres[0].categoryId == 2) {
             filtresAppartements = newDataBaseFiltre;
             modifInt(2);
             newDataBase.push(...filtresAppartements);
             filtresGlobaux = newDataBase;
-            galerieDyn.innerHTML = "";
-            createElementsGalerie(newDataBaseFiltre, galerieDyn);
+            if (document.getElementById(`id${NumberToUse}`)) {
+              document.getElementById(`id${NumberToUse}`).remove();
+            }
           } else {
             filtresHotels = newDataBaseFiltre;
             modifInt(3);
             newDataBase.push(...filtresHotels);
             filtresGlobaux = newDataBase;
-            galerieDyn.innerHTML = "";
-            createElementsGalerie(newDataBaseFiltre, galerieDyn);
+            document.getElementById(`id${NumberToUse}`).remove();
           }
           filtresGlobaux.sort((a, b) => {
             return a.id - b.id;
@@ -312,43 +392,96 @@ const createElementsGalerie = (e, f) => {
             return a.id - b.id;
           });
         } else {
-          newDataBase.splice(finalId, 1);
+          newDataBase.splice(NumberToUse, 1);
+          document.getElementById(`id${NumberToUse}`).remove();
         }
+
         difference = dataBase.filter((x) => !newDataBase.includes(x));
-        galerieDyn.innerHTML = "";
-        createElementsGalerie(newDataBase, galerieDyn);
-        console.log(difference);
-      });
-      noDont.addEventListener("click", () => {
-        deleteReally.classList.remove("surprise");
+        stocking();
       });
     });
-  });
+  }
+  // deleteIncomming();
 };
+
+// const deleteIncomming = () => {
+//   const deleteImg = document.querySelectorAll(".logo-black");
+
+//   deleteImg.forEach((e) => {
+//     e.addEventListener("click", () => {
+//       const deleteReally = document.getElementById("flyingcookie");
+//       const yesDelete = document.getElementById("accept");
+//       const noDont = document.getElementById("deny");
+
+//       deleteReally.classList.add("surprise");
+
+//       noDont.addEventListener("click", () => {
+//         deleteReally.classList.remove("surprise");
+//       });
+
+//       yesDelete.addEventListener("click", () => {
+//         deleteReally.classList.remove("surprise");
+//         const galerieDyn = document.getElementById("galerie-dyn");
+
+//         let superId = e.id;
+//         let finalId = Number(superId.slice(7)) - 1;
+//         if (dataBaseFiltres) {
+//           newDataBaseFiltre.splice(finalId, 1);
+//           if (dataBaseFiltres[0].categoryId == 1) {
+//             filtresObjets = newDataBaseFiltre;
+//             modifInt(1);
+//             newDataBase.push(...filtresObjets);
+//             filtresGlobaux = newDataBase;
+//             galerieDyn.remove();
+//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
+//           } else if (dataBaseFiltres[0].categoryId == 2) {
+//             filtresAppartements = newDataBaseFiltre;
+//             modifInt(2);
+//             newDataBase.push(...filtresAppartements);
+//             filtresGlobaux = newDataBase;
+//             galerieDyn.innerHTML = "";
+//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
+//           } else {
+//             filtresHotels = newDataBaseFiltre;
+//             modifInt(3);
+//             newDataBase.push(...filtresHotels);
+//             filtresGlobaux = newDataBase;
+//             galerieDyn.innerHTML = "";
+//             createElementsGalerie(newDataBaseFiltre, galerieDyn);
+//           }
+//           filtresGlobaux.sort((a, b) => {
+//             return a.id - b.id;
+//           });
+//           newDataBase.sort((a, b) => {
+//             return a.id - b.id;
+//           });
+//         } else {
+//           newDataBase.splice(finalId, 1);
+//           galerieDyn.innerHTML = "";
+//           createElementsGalerie(newDataBase, galerieDyn);
+//         }
+
+//         difference = dataBase.filter((x) => !newDataBase.includes(x));
+//         stocking();
+//       });
+//     });
+//   });
+// };
 
 const DeleteData = (e) => {
-  for (let i = 0; i < e.length; i++) {
-    let deleting = e[0].id;
-    async function EnvoieDelete() {
-      let response = await fetch(
-        `http://localhost:5678/api/works/${deleting}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      let result = await response.json();
-
-      console.log(result);
-    }
-    EnvoieDelete();
-    dataBase = Array.from(newDataBase);
-    e.shift();
+  let deleting = e[0].id;
+  function EnvoieDelete() {
+    fetch(`http://localhost:5678/api/works/${deleting}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   }
-};
+  EnvoieDelete();
 
+  stocking();
+};
 const modifInt = (f) => {
   newDataBase = newDataBase.filter((e) => {
     return e.categoryId !== f;

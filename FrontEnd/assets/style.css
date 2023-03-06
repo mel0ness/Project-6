@@ -662,6 +662,11 @@ label.click-ajout input {
   display: none;
 }
 
+.flyingDeleteGalerie {
+  position: fixed;
+  display: none;
+}
+
 .surprise {
   display: flex;
 }
