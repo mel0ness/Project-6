@@ -19,6 +19,22 @@ let caArrayCookie = Array.from(ca)
   })
   .toString();
 
+// Deconnexion____________________________________________________________________
+
+const disconnect = () => {
+  eraseCookie("connected");
+  window.sessionStorage.clear();
+  connected = null;
+  connectedTime = null;
+
+  window.location.reload();
+};
+
+function eraseCookie(name) {
+  document.cookie = name + '=; Path=/; Expires=""';
+  ca = Array.from(document.cookie.split(";"));
+}
+
 // Connection
 
 //Modale_______________________________________________________________________________
@@ -139,21 +155,8 @@ function createElements(e) {
   }
 }
 
-// Deconnexion____________________________________________________________________
-
-const disconnect = () => {
-  eraseCookie("connected");
-  window.sessionStorage.clear();
-  connected = null;
-  connectedTime = null;
-
-  window.location.reload();
-};
-
-function eraseCookie(name) {
-  document.cookie = name + '=; Path=/; Expires=""';
-  ca = Array.from(document.cookie.split(";"));
-}
+let diffTotale = [];
+let ErasingArray = [];
 
 const DeletingAll = () => {
   const flyinDeleteGalerie = document.getElementById("flyinDeleteGalerie");
@@ -162,31 +165,78 @@ const DeletingAll = () => {
   const denyDeleteGalerie = document.getElementById("denyDeleteGalerie");
 
   acceptDeleteGalerie.addEventListener("click", () => {
+    const galerieDyn = document.getElementById("galerie-dyn");
     if (newDataBaseFiltre) {
       if (dataBaseFiltres[0].categoryId == 1) {
         newDataBaseFiltre = [];
         filtresObjets = newDataBaseFiltre;
         modifInt(1);
         filtresGlobaux = newDataBase;
+        diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+        Eraser(diffTotale);
+        Erasing(ErasingArray);
+        galerieDyn.innerHTML = "";
+        createElementsGalerie(newDataBaseFiltre, galerieDyn);
       } else if (dataBaseFiltres[0].categoryId == 2) {
         newDataBaseFiltre = [];
         filtresAppartements = newDataBaseFiltre;
         modifInt(2);
         filtresGlobaux = newDataBase;
+        diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+        Eraser(diffTotale);
+        Erasing(ErasingArray);
+        galerieDyn.innerHTML = "";
+        createElementsGalerie(newDataBaseFiltre, galerieDyn);
       } else {
         newDataBaseFiltre = [];
         filtresHotels = newDataBaseFiltre;
         modifInt(3);
         filtresGlobaux = newDataBase;
+        diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+        Eraser(diffTotale);
+        Erasing(ErasingArray);
+        galerieDyn.innerHTML = "";
+        createElementsGalerie(newDataBaseFiltre, galerieDyn);
       }
     } else {
       newDataBase = [];
+      diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+      Eraser(diffTotale);
+      Erasing(ErasingArray);
+      galerieDyn.innerHTML = "";
+      createElementsGalerie(newDataBaseFiltre, galerieDyn);
     }
+    flyinDeleteGalerie.classList.remove("surprise");
   });
 
   denyDeleteGalerie.addEventListener("click", () => {
     flyinDeleteGalerie.classList.remove("surprise");
   });
+};
+
+const Eraser = (e) => {
+  let NumberToIterate = e.length;
+  for (let i = 0; i < NumberToIterate; i++) {
+    ErasingArray.push(diffTotale[0].id);
+    diffTotale.shift();
+  }
+};
+
+const Erasing = (e) => {
+  let NumberToIterate = e.length;
+  for (let i = 0; i < NumberToIterate; i++) {
+    async function EnvoieDelete() {
+      await fetch(`http://localhost:5678/api/works/${ErasingArray[0]}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      ErasingArray.shift();
+      console.log(ErasingArray);
+    }
+    EnvoieDelete();
+  }
 };
 
 const fermeture = (e, f) => {
@@ -201,6 +251,7 @@ const fermeture = (e, f) => {
 };
 
 let formulaireData = [];
+let sentData = false;
 
 const modaleAjout = () => {
   const modaleFiltre = document.getElementById("modale");
@@ -272,6 +323,92 @@ const validateAPI = () => {
         },
         body: formulaireData,
       });
+      async function fetchAPIAjout() {
+        const response = await fetch("http://localhost:5678/api/works");
+        dataBase = await response.json();
+        newDataBase = Array.from(dataBase);
+
+        filtresObjets = dataBase.filter((d) => {
+          return d.categoryId == 1;
+        });
+        filtresAppartements = dataBase.filter((d) => {
+          return d.categoryId == 2;
+        });
+        filtresHotels = dataBase.filter((d) => {
+          return d.categoryId == 3;
+        });
+        if (newDataBaseFiltre[0].categoryId == 1) {
+          newDataBaseFiltre = filtresObjets;
+        }
+        if (newDataBaseFiltre[0].categoryId == 2) {
+          newDataBaseFiltre = filtresAppartements;
+        }
+        if (newDataBaseFiltre[0].categoryId == 3) {
+          newDataBaseFiltre = filtresHotels;
+        }
+        modale();
+        const galerieDyn = document.getElementById("galerie-dyn");
+        galerieDyn.innerHTML = "";
+        if (dataBaseFiltres === null) {
+          createElementsGalerie(newDataBase, galerieDyn);
+        } else {
+          createElementsGalerie(newDataBaseFiltre, galerieDyn);
+        }
+      }
+      fetchAPIAjout();
+    }
+    envoieAPI();
+  });
+};
+
+const validateAPIEdit = () => {
+  const newPhoto = document.getElementById("newPhoto");
+  newPhoto.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    formulaireData = new FormData(newPhoto);
+
+    async function envoieAPI() {
+      await fetch("http://localhost:5678/api/works", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formulaireData,
+      });
+      async function fetchAPIAjout() {
+        const response = await fetch("http://localhost:5678/api/works");
+        dataBase = await response.json();
+        newDataBase = Array.from(dataBase);
+
+        filtresObjets = dataBase.filter((d) => {
+          return d.categoryId == 1;
+        });
+        filtresAppartements = dataBase.filter((d) => {
+          return d.categoryId == 2;
+        });
+        filtresHotels = dataBase.filter((d) => {
+          return d.categoryId == 3;
+        });
+        if (newDataBaseFiltre[0].categoryId == 1) {
+          newDataBaseFiltre = filtresObjets;
+        }
+        if (newDataBaseFiltre[0].categoryId == 2) {
+          newDataBaseFiltre = filtresAppartements;
+        }
+        if (newDataBaseFiltre[0].categoryId == 3) {
+          newDataBaseFiltre = filtresHotels;
+        }
+        modale();
+        const galerieDyn = document.getElementById("galerie-dyn");
+        galerieDyn.innerHTML = "";
+        if (dataBaseFiltres === null) {
+          createElementsGalerie(newDataBase, galerieDyn);
+        } else {
+          createElementsGalerie(newDataBaseFiltre, galerieDyn);
+        }
+      }
+      fetchAPIAjout();
     }
     envoieAPI();
   });
@@ -411,63 +548,127 @@ const DeleteData = (e) => {
 let APIEditionSelect = [];
 
 const modaleEdition = (e) => {
-  editionSelect = dataBase[e.id.slice(6)];
-  APIEditionSelect = [editionSelect.id, editionSelect.id];
-  let editionSelectTitle = editionSelect.title;
-  let editionSelectCategory = editionSelect.category.name;
-  let editionSelectCategoryValue = null;
-  if (editionSelectCategory == "Objets") {
-    editionSelectCategoryValue = 1;
+  if (dataBaseFiltres) {
+    editionSelect = dataBaseFiltres[e.id.slice(6)];
+    console.log(editionSelect.id);
+    //   newDataBaseFiltre.splice(editionSelect, 1);
+    // if (dataBaseFiltres[0].categoryId == 1) {
+
+    //     filtresObjets = newDataBaseFiltre;
+    //     modifInt(1);
+    //     newDataBase.push(...filtresObjets);
+    //     filtresGlobaux = newDataBase;
+    //     difference.splice(0, 1);
+    //     difference = dataBase.filter((x) => !newDataBase.includes(x));
+    //     DeleteData(difference[0]);
+    //     dataBase = newDataBase;
+    //     galerieDyn.innerHTML = "";
+    //     createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    //   } else if (dataBaseFiltres[0].categoryId == 2) {
+    //     filtresAppartements = newDataBaseFiltre;
+    //     modifInt(2);
+    //     newDataBase.push(...filtresAppartements);
+    //     filtresGlobaux = newDataBase;
+    //     difference.splice(0, 1);
+    //     difference = dataBase.filter((x) => !newDataBase.includes(x));
+    //     DeleteData(difference[0]);
+    //     dataBase = newDataBase;
+    //     galerieDyn.innerHTML = "";
+    //     createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    //   } else {
+    //     filtresHotels = newDataBaseFiltre;
+    //     modifInt(3);
+    //     newDataBase.push(...filtresHotels);
+    //     filtresGlobaux = newDataBase;
+    //     difference.splice(0, 1);
+    //     difference = dataBase.filter((x) => !newDataBase.includes(x));
+    //     DeleteData(difference[0]);
+    //     dataBase = newDataBase;
+    //     galerieDyn.innerHTML = "";
+    //     createElementsGalerie(newDataBaseFiltre, galerieDyn);
+    // }
+    //   filtresGlobaux.sort((a, b) => {
+    //     return a.id - b.id;
+    //   });
+    //   newDataBase.sort((a, b) => {
+    //     return a.id - b.id;
+    //   });
+  } else {
+    editionSelect = dataBase[e.id.slice(6)];
+    console.log(editionSelect.id);
+    //   newDataBase.splice(NumberToUse, 1);
+    //   difference.splice(0, 1);
+    //   difference = dataBase.filter((x) => !newDataBase.includes(x));
+    //   DeleteData(difference[0]);
+    //   filtresGlobaux = newDataBase;
+    //   galerieDyn.innerHTML = "";
+    //   createElementsGalerie(newDataBase, galerieDyn);
+    //   filtresObjets = newDataBase.filter((d) => {
+    //     return d.categoryId == 1;
+    //   });
+    //   filtresAppartements = newDataBase.filter((d) => {
+    //     return d.categoryId == 2;
+    //   });
+    //   filtresHotels = newDataBase.filter((d) => {
+    //     return d.categoryId == 3;
+    //   });
   }
-  if (editionSelectCategory == "Appartements") {
-    editionSelectCategoryValue = 2;
-  }
-  if (editionSelectCategory == "Hotels & restaurants") {
-    editionSelectCategoryValue = 3;
-  }
+
+  //   APIEditionSelect = [editionSelect.id, editionSelect.id];
+  //   let editionSelectTitle = editionSelect.title;
+  //   let editionSelectCategory = editionSelect.category.name;
+  //   let editionSelectCategoryValue = null;
+  //   if (editionSelectCategory == "Objets") {
+  //     editionSelectCategoryValue = 1;
+  //   }
+  //   if (editionSelectCategory == "Appartements") {
+  //     editionSelectCategoryValue = 2;
+  //   }
+  //   if (editionSelectCategory == "Hotels & restaurants") {
+  //     editionSelectCategoryValue = 3;
+  //   }
 
   const modaleFiltre = document.getElementById("modale");
   const modaleDiv = document.getElementById("modale-item");
   modaleDiv.innerHTML = `
-  <img src="./assets/icons/Arrow_Back.png" alt="flêche de retour"
-  id="back" class="back">
-<div class="cross" id="cross">
-  <div class="cross-elem cross-left"></div>
-  <div class="cross-elem cross-right"></div>
-</div>
-<form action="" method="post" id="newPhoto" name="newPhoto">
-<div class="modale-ajout">
-  <h3>Ajout photo</h3>
-
- 
-  <div class="ajout-photo">
- 
-  <output id="output"></output>
-
-    <label class="click-ajout bigger" id="inputFile" for="image"><div class="inlabel" id="inlabel"></div><input type="file" accept="image/png, image/jpg, image/jpeg" id="image" name="image" ></input></label>
-    <div class="indicationsRed majax" id="indicationsRed">Le fichier ne doit pas dépasser 4mo!</div>
+    <img src="./assets/icons/Arrow_Back.png" alt="flêche de retour"
+    id="back" class="back">
+  <div class="cross" id="cross">
+    <div class="cross-elem cross-left"></div>
+    <div class="cross-elem cross-right"></div>
   </div>
-  <label for="title">Titre</label>
-  <input id="title" name="title" type="text" value="${editionSelectTitle}">
-  <label for="category">Catégorie</label>
-  <select name="category" id="category">
-    <option value="" ></option>
-    <option value="1">Objets</option>
-    <option value="2">Appartements</option>
-    <option value="3">Hotels & restaurants</option>
+  <form action="" method="post" id="newPhoto" name="newPhoto">
+  <div class="modale-ajout">
+    <h3>Ajout photo</h3>
 
-  </select>
-  <div class="line"></div>
-  <input type="submit" value="Valider" class="inactiveOne inactiveTwo" disabled id="validationPhoto">
-  </form>
-</div>`;
+    <div class="ajout-photo">
+
+    <output id="output"></output>
+
+      <label class="click-ajout bigger" id="inputFile" for="image"><div class="inlabel" id="inlabel"></div><input type="file" accept="image/png, image/jpg, image/jpeg" id="image" name="image" ></input></label>
+      <div class="indicationsRed majax" id="indicationsRed">Le fichier ne doit pas dépasser 4mo!</div>
+    </div>
+    <label for="title">Titre</label>
+    <input id="title" name="title" type="text" value="${editionSelect.title}">
+    <label for="category">Catégorie</label>
+    <select name="category" id="category">
+      <option value="" ></option>
+      <option value="1">Objets</option>
+      <option value="2">Appartements</option>
+      <option value="3">Hotels & restaurants</option>
+
+    </select>
+    <div class="line"></div>
+    <input type="submit" value="Valider"   id="validationPhoto">
+    </form>
+  </div>`;
 
   const selectValue = (e) => {
     const selectForm = document.getElementById("category");
     selectForm.value = e;
   };
 
-  selectValue(editionSelectCategoryValue);
+  selectValue(editionSelect.categoryId);
 
   const outputImg = document.getElementById("output");
 
@@ -482,8 +683,7 @@ const modaleEdition = (e) => {
 
   innerCreateImgEdit();
 
-  formFunctionnal();
-  validateAPI();
+  validateAPIEdit();
   const cross = document.getElementById("cross");
   cross.addEventListener("click", () => {
     fermeture(modaleDiv, modaleFiltre);
