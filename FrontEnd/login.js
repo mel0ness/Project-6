@@ -29,9 +29,11 @@ selectSessionMode();
 // Submit final
 
 form.addEventListener("submit", (e) => {
+  const Warning = document.getElementById("indicationsRed");
   if (user.value.length < 5 || pass.value.length < 5) {
     e.preventDefault();
-    alert("Veuillez remplir correctement le formulaire");
+    Warning.classList.remove("majax");
+    Warning.textContent = "Veuillez remplir correctement le formulaire";
   } else {
     e.preventDefault();
     verif();
@@ -54,13 +56,17 @@ async function verif() {
     body: chargeUtil,
   });
   let result = await response.json();
+  const Warning = document.getElementById("indicationsRed");
 
   if (result.message == "user not found") {
-    alert("Les informations de connexion sont erronées");
+    Warning.classList.remove("majax");
+    Warning.textContent = "Les informations de connexion sont erronées";
   } else if (result.error) {
-    alert("Mot de passe incorrect");
+    Warning.classList.remove("majax");
+    Warning.textContent = "Mot de passe incorrect";
   } else {
     token = result.token;
+    Warning.classList.add("majax");
     if (cookiez == true) {
       createCookie("connected", "True", 1, token);
     } else if (cookiez == false) {
