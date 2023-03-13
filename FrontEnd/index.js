@@ -136,7 +136,6 @@ async function fetchAPI() {
   const response = await fetch("http://localhost:5678/api/works");
   dataBase = await response.json();
   newDataBase = Array.from(dataBase);
-  console.log(dataBase);
   createElements(dataBase);
 }
 
@@ -329,7 +328,7 @@ const validateAPI = () => {
         const response = await fetch("http://localhost:5678/api/works");
         dataBase = await response.json();
         newDataBase = Array.from(dataBase);
-
+        filtresGlobaux = newDataBase;
         filtresObjets = dataBase.filter((d) => {
           return d.categoryId == 1;
         });
@@ -401,6 +400,7 @@ const createElementsGalerie = (e, f) => {
         "click",
         () => {
           deleteReally.classList.remove("surprise");
+
           ActionDelete(bin);
           bin.replaceWith(bin.cloneNode(true));
         },
@@ -409,9 +409,10 @@ const createElementsGalerie = (e, f) => {
     });
   }
 };
-
 let difference = [];
+
 const ActionDelete = (bin) => {
+  difference = [];
   const galerieDyn = document.getElementById("galerie-dyn");
   let NumberToUse = bin.id.slice(7);
   if (dataBaseFiltres) {
@@ -421,7 +422,6 @@ const ActionDelete = (bin) => {
       modifInt(1);
       newDataBase.push(...filtresObjets);
       filtresGlobaux = newDataBase;
-      difference.splice(0, 1);
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
@@ -432,7 +432,6 @@ const ActionDelete = (bin) => {
       modifInt(2);
       newDataBase.push(...filtresAppartements);
       filtresGlobaux = newDataBase;
-      difference.splice(0, 1);
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
@@ -443,7 +442,6 @@ const ActionDelete = (bin) => {
       modifInt(3);
       newDataBase.push(...filtresHotels);
       filtresGlobaux = newDataBase;
-      difference.splice(0, 1);
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
@@ -458,10 +456,10 @@ const ActionDelete = (bin) => {
     });
   } else {
     newDataBase.splice(NumberToUse, 1);
-    difference.splice(0, 1);
     difference = dataBase.filter((x) => !newDataBase.includes(x));
     DeleteData(difference[0]);
     filtresGlobaux = newDataBase;
+    dataBase.splice(NumberToUse, 1);
     galerieDyn.innerHTML = "";
     createElementsGalerie(newDataBase, galerieDyn);
     filtresObjets = newDataBase.filter((d) => {
@@ -478,7 +476,6 @@ const ActionDelete = (bin) => {
 
 const DeleteData = (e) => {
   let numberToDelete = e.id;
-  console.log(numberToDelete);
   async function EnvoieDelete() {
     await fetch(`http://localhost:5678/api/works/${numberToDelete}`, {
       method: "DELETE",
@@ -636,6 +633,7 @@ const filtresAll = () => {
   } else if (filtresGlobaux !== null) {
     galerie.innerHTML = "";
     createElements(filtresGlobaux);
+    0;
   }
 };
 
