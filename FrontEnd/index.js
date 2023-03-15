@@ -143,6 +143,8 @@ fetchAPI();
 
 //Création des éléments en dynamique ______________________________________________________
 
+let filterIndex = null;
+
 function createElements(e) {
   for (let i = 0; i < e.length; i++) {
     const figure = e[i];
@@ -162,52 +164,55 @@ const DeletingAll = () => {
   flyinDeleteGalerie.classList.add("surprise");
   const acceptDeleteGalerie = document.getElementById("acceptDeleteGalerie");
   const denyDeleteGalerie = document.getElementById("denyDeleteGalerie");
+  const galerieDyn = document.getElementById("galerie-dyn");
 
-  acceptDeleteGalerie.addEventListener("click", () => {
-    const modaleFiltre = document.getElementById("modale");
-    const modaleDiv = document.getElementById("modale-item");
-    if (newDataBaseFiltre) {
-      if (dataBaseFiltres[0].categoryId == 1) {
-        newDataBaseFiltre = [];
-        filtresObjets = newDataBaseFiltre;
-        modifInt(1);
-        filtresGlobaux = newDataBase;
-        diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
-        Eraser(diffTotale);
-        Erasing(ErasingArray);
-        dataBase = [];
-        fermeture(modaleDiv, modaleFiltre);
-      } else if (dataBaseFiltres[0].categoryId == 2) {
-        newDataBaseFiltre = [];
-        filtresAppartements = newDataBaseFiltre;
-        modifInt(2);
-        filtresGlobaux = newDataBase;
-        diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
-        Eraser(diffTotale);
-        Erasing(ErasingArray);
-        dataBase = [];
-        fermeture(modaleDiv, modaleFiltre);
+  acceptDeleteGalerie.addEventListener(
+    "click",
+    () => {
+      if (newDataBaseFiltre) {
+        if (dataBaseFiltres[0].categoryId == 1) {
+          dataBaseFiltres = null;
+          filtresObjets = dataBaseFiltres;
+          modifInt(1);
+          filtresGlobaux = newDataBase;
+          diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+          Eraser(diffTotale);
+          Erasing(ErasingArray);
+          galerieDyn.innerHTML = "";
+          filterIndex = 1;
+        } else if (dataBaseFiltres[0].categoryId == 2) {
+          dataBaseFiltres = null;
+          filtresAppartements = dataBaseFiltres;
+          modifInt(2);
+          filtresGlobaux = newDataBase;
+          diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+          Eraser(diffTotale);
+          Erasing(ErasingArray);
+          galerieDyn.innerHTML = "";
+          filterIndex = 2;
+        } else {
+          dataBaseFiltres = null;
+          filtresHotels = dataBaseFiltres;
+          modifInt(3);
+          filtresGlobaux = newDataBase;
+          diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
+          Eraser(diffTotale);
+          Erasing(ErasingArray);
+          galerieDyn.innerHTML = "";
+          filterIndex = 3;
+        }
       } else {
-        newDataBaseFiltre = [];
-        filtresHotels = newDataBaseFiltre;
-        modifInt(3);
-        filtresGlobaux = newDataBase;
+        newDataBase = [];
         diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
         Eraser(diffTotale);
         Erasing(ErasingArray);
         dataBase = [];
-        fermeture(modaleDiv, modaleFiltre);
+        galerieDyn.innerHTML = "";
       }
-    } else {
-      newDataBase = [];
-      diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
-      Eraser(diffTotale);
-      Erasing(ErasingArray);
-      dataBase = [];
-      fermeture(modaleDiv, modaleFiltre);
-    }
-    flyinDeleteGalerie.classList.remove("surprise");
-  });
+      flyinDeleteGalerie.classList.remove("surprise");
+    },
+    { once: true }
+  );
 
   denyDeleteGalerie.addEventListener("click", () => {
     flyinDeleteGalerie.classList.remove("surprise");
@@ -245,7 +250,10 @@ const fermeture = (e, f) => {
   f.classList.remove("modale-class_visible");
   galerie.innerHTML = "";
   if (newDataBaseFiltre) {
-    createElements(newDataBaseFiltre);
+    if (dataBaseFiltres) {
+      createElements(dataBaseFiltres);
+    } else {
+    }
   } else {
     createElements(newDataBase);
   }
@@ -339,20 +347,35 @@ const validateAPI = () => {
           return d.categoryId == 3;
         });
         if (newDataBaseFiltre) {
-          if (newDataBaseFiltre[0].categoryId == 1) {
+          if (
+            (dataBaseFiltres && dataBaseFiltres[0].categoryId == 1) ||
+            filterIndex == 1
+          ) {
             newDataBaseFiltre = filtresObjets;
+            dataBaseFiltres = filtresObjets;
+            filterIndex = null;
           }
-          if (newDataBaseFiltre[0].categoryId == 2) {
+          if (
+            (dataBaseFiltres && dataBaseFiltres[0].categoryId == 2) ||
+            filterIndex == 2
+          ) {
             newDataBaseFiltre = filtresAppartements;
+            dataBaseFiltres = filtresAppartements;
+            filterIndex = null;
           }
-          if (newDataBaseFiltre[0].categoryId == 3) {
+          if (
+            (dataBaseFiltres && dataBaseFiltres[0].categoryId == 3) ||
+            filterIndex == 3
+          ) {
             newDataBaseFiltre = filtresHotels;
+            dataBaseFiltres = filtresHotels;
+            filterIndex = null;
           }
         }
         modale();
         const galerieDyn = document.getElementById("galerie-dyn");
         galerieDyn.innerHTML = "";
-        if (dataBaseFiltres === null) {
+        if (newDataBaseFiltre === null) {
           createElementsGalerie(newDataBase, galerieDyn);
         } else {
           createElementsGalerie(newDataBaseFiltre, galerieDyn);
@@ -645,25 +668,17 @@ const filtresFinaux = (e) => {
   dataBaseFiltres = dataBase.filter((d) => {
     return d.categoryId == e;
   });
-
   newDataBaseFiltre = newDataBase.filter((d) => {
     return d.categoryId == e;
   });
-
-  if (e == 2 && filtresAppartements == null) {
-    filtresAppartements = dataBaseFiltres;
+  if (e == 2) {
+    filtresAppartements = newDataBaseFiltre;
     filtresFunction(filtresAppartements);
-  } else if (e == 2 && filtresAppartements !== null) {
-    filtresFunction(filtresAppartements);
-  } else if (e == 1 && filtresObjets == null) {
-    filtresObjets = dataBaseFiltres;
+  } else if (e == 1) {
+    filtresObjets = newDataBaseFiltre;
     filtresFunction(filtresObjets);
-  } else if (e == 1 && filtresObjets !== null) {
-    filtresFunction(filtresObjets);
-  } else if (e == 3 && filtresHotels == null) {
-    filtresHotels = dataBaseFiltres;
-    filtresFunction(filtresHotels);
-  } else if (e == 3 && filtresHotels !== null) {
+  } else if (e == 3) {
+    filtresHotels = newDataBaseFiltre;
     filtresFunction(filtresHotels);
   }
 };
