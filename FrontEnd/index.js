@@ -432,12 +432,10 @@ const createElementsGalerie = (e, f) => {
         deleteReally.classList.remove("surprise");
         deleteReally.innerHTML = "";
       });
-
       yesDelete.addEventListener(
         "click",
         () => {
           deleteReally.classList.remove("surprise");
-
           ActionDelete(bin);
           deleteReally.innerHTML = "";
         },
@@ -522,6 +520,7 @@ const ActionDelete = (bin) => {
 
 const DeleteData = (e) => {
   let numberToDelete = e.id;
+  console.log(numberToDelete);
   async function EnvoieDelete() {
     await fetch(`http://localhost:5678/api/works/${numberToDelete}`, {
       method: "DELETE",
