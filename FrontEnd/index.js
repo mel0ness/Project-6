@@ -248,6 +248,14 @@ const Erasing = (e) => {
 const fermeture = (e, f) => {
   e.innerHTML = "";
   f.classList.remove("modale-class_visible");
+  const deleteReally = document.getElementById("flyingcookie");
+  if (deleteReally.classList.contains("surprise")) {
+    deleteReally.classList.remove("surprise");
+  }
+  const flyinDeleteGalerie = document.getElementById("flyinDeleteGalerie");
+  if (flyinDeleteGalerie.classList.contains("surprise")) {
+    flyinDeleteGalerie.classList.remove("surprise");
+  }
   galerie.innerHTML = "";
   if (newDataBaseFiltre) {
     if (dataBaseFiltres) {
@@ -410,6 +418,11 @@ const createElementsGalerie = (e, f) => {
     img.appendChild(bin);
     bin.addEventListener("click", () => {
       const deleteReally = document.getElementById("flyingcookie");
+
+      deleteReally.innerHTML = `<p>Êtes vous sûr(e) de vouloir supprimer cette photo?</p>
+			<div class="flyingInputs"><input type="submit" value="Oui" id="accept">
+				<input type="submit" value="Non" id="deny">
+			</div>`;
       const yesDelete = document.getElementById("accept");
       const noDont = document.getElementById("deny");
 
@@ -417,6 +430,7 @@ const createElementsGalerie = (e, f) => {
 
       noDont.addEventListener("click", () => {
         deleteReally.classList.remove("surprise");
+        deleteReally.innerHTML = "";
       });
 
       yesDelete.addEventListener(
@@ -425,7 +439,7 @@ const createElementsGalerie = (e, f) => {
           deleteReally.classList.remove("surprise");
 
           ActionDelete(bin);
-          bin.replaceWith(bin.cloneNode(true));
+          deleteReally.innerHTML = "";
         },
         { once: true }
       );
@@ -448,6 +462,9 @@ const ActionDelete = (bin) => {
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
+      dataBaseFiltres = dataBase.filter((d) => {
+        return d.categoryId == 1;
+      });
       galerieDyn.innerHTML = "";
       createElementsGalerie(newDataBaseFiltre, galerieDyn);
     } else if (dataBaseFiltres[0].categoryId == 2) {
@@ -458,6 +475,9 @@ const ActionDelete = (bin) => {
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
+      dataBaseFiltres = dataBase.filter((d) => {
+        return d.categoryId == 2;
+      });
       galerieDyn.innerHTML = "";
       createElementsGalerie(newDataBaseFiltre, galerieDyn);
     } else {
@@ -468,6 +488,9 @@ const ActionDelete = (bin) => {
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
       dataBase = newDataBase;
+      dataBaseFiltres = dataBase.filter((d) => {
+        return d.categoryId == 3;
+      });
       galerieDyn.innerHTML = "";
       createElementsGalerie(newDataBaseFiltre, galerieDyn);
     }
