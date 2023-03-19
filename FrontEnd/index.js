@@ -447,7 +447,7 @@ const createElementsGalerie = (e, f) => {
 let difference = [];
 
 const ActionDelete = (bin) => {
-  difference = [];
+  difference.splice(0, 1);
   const galerieDyn = document.getElementById("galerie-dyn");
   let NumberToUse = bin.id.slice(7);
   if (dataBaseFiltres) {
@@ -459,7 +459,9 @@ const ActionDelete = (bin) => {
       filtresGlobaux = newDataBase;
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
-      dataBase = newDataBase;
+      dataBase = dataBase.filter((x) => {
+        return x.id !== difference[0].id;
+      });
       dataBaseFiltres = dataBase.filter((d) => {
         return d.categoryId == 1;
       });
@@ -472,7 +474,9 @@ const ActionDelete = (bin) => {
       filtresGlobaux = newDataBase;
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
-      dataBase = newDataBase;
+      dataBase = dataBase.filter((x) => {
+        return x.id !== difference[0].id;
+      });
       dataBaseFiltres = dataBase.filter((d) => {
         return d.categoryId == 2;
       });
@@ -485,7 +489,9 @@ const ActionDelete = (bin) => {
       filtresGlobaux = newDataBase;
       difference = dataBase.filter((x) => !newDataBase.includes(x));
       DeleteData(difference[0]);
-      dataBase = newDataBase;
+      dataBase = dataBase.filter((x) => {
+        return x.id !== difference[0].id;
+      });
       dataBaseFiltres = dataBase.filter((d) => {
         return d.categoryId == 3;
       });
@@ -502,8 +508,8 @@ const ActionDelete = (bin) => {
     newDataBase.splice(NumberToUse, 1);
     difference = dataBase.filter((x) => !newDataBase.includes(x));
     DeleteData(difference[0]);
-    filtresGlobaux = newDataBase;
     dataBase.splice(NumberToUse, 1);
+    filtresGlobaux = newDataBase;
     galerieDyn.innerHTML = "";
     createElementsGalerie(newDataBase, galerieDyn);
     filtresObjets = newDataBase.filter((d) => {
@@ -520,7 +526,6 @@ const ActionDelete = (bin) => {
 
 const DeleteData = (e) => {
   let numberToDelete = e.id;
-  console.log(numberToDelete);
   async function EnvoieDelete() {
     await fetch(`http://localhost:5678/api/works/${numberToDelete}`, {
       method: "DELETE",
