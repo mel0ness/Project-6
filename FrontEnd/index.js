@@ -203,6 +203,7 @@ const DeletingAll = () => {
         }
       } else {
         newDataBase = [];
+        filtresGlobaux = "";
         diffTotale = dataBase.filter((x) => !newDataBase.includes(x));
         Eraser(diffTotale);
         Erasing(ErasingArray);
